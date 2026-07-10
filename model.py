@@ -177,8 +177,14 @@ def array_exp(arr):
     res = np.exp(arr)
     return res
 
-# Step 22 - array_log (not yet solved)
-# TODO: implement
+# Step 22 - array_log
+import numpy as np
+
+def array_log(arr):
+    """Return the elementwise natural log of arr (assumes arr > 0)."""
+    # TODO: apply elementwise natural log to arr and return the result
+    res = np.log(arr)
+    return res
 
 # Step 23 - sum_all (not yet solved)
 # TODO: implement
