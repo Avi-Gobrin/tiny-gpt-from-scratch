@@ -211,8 +211,12 @@ def sum_axis1(arr):
     """Sum a 2D array along axis 1, returning a 1D array of row sums."""
     return arr.sum(1)
 
-# Step 26 - max_along_axis (not yet solved)
-# TODO: implement
+# Step 26 - max_along_axis
+import numpy as np
+
+def max_along_axis(arr, axis):
+    """Return the maximum of arr along the given axis, with that axis removed."""
+    return np.max(arr, axis)
 
 # Step 27 - matmul (not yet solved)
 # TODO: implement
