@@ -116,8 +116,13 @@ def slice_row(arr, i):
     # TODO: return the i-th row of arr as a 1D array of shape (C,)
     return arr[i,:]
 
-# Step 15 - slice_column (not yet solved)
-# TODO: implement
+# Step 15 - slice_column
+import numpy as np
+
+def slice_column(arr, j):
+    """Return column j of a 2D array as a 1D array of length R."""
+    # TODO: index into arr to extract the j-th column as a 1D array.
+    return arr[:,j]
 
 # Step 16 - slice_subblock (not yet solved)
 # TODO: implement
