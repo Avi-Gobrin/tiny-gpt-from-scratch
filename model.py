@@ -182,7 +182,9 @@ import numpy as np
 
 def array_log(arr):
     """Return the elementwise natural log of arr (assumes arr > 0)."""
-    # TODO: apply elementwise natural log to arr and return the result
+    # note to self, 0 will cause problems as this is a log function,
+    # in practice we add a very small epsilon to get around this
+    # however, here we assume it is always non 0
     res = np.log(arr)
     return res
 
