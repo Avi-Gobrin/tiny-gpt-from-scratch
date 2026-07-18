@@ -289,8 +289,16 @@ def find_max_with_axis(arr):
     "return the max but add back the axis (ie instead of (int, ) we get (int, 1)"
     return np.expand_dims(max_along_axis(arr, 1), 1)
 
-# Step 34 - read_text_file (not yet solved)
-# TODO: implement
+# Step 34 - read_text_file
+def read_text_file(text_blob):
+    """Return text_blob unchanged after validating it is a non-empty string."""
+    # TODO: validate that text_blob is a non-empty str and return it as the corpus string
+    if not isinstance(text_blob, str):
+        raise TypeError
+    if text_blob == "":
+        raise ValueError
+
+    return text_blob
 
 # Step 35 - encode_corpus_to_int_array (not yet solved)
 # TODO: implement
