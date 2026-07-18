@@ -312,8 +312,13 @@ def pick_split_point(n, train_frac):
     # TODO: compute the integer split index from n and train_frac
     return int(n * train_frac)
 
-# Step 37 - slice_train_and_val (not yet solved)
-# TODO: implement
+# Step 37 - slice_train_and_val
+def slice_train_and_val(data, split_idx):
+    """Split a 1D token-id array into (train, val) at split_idx."""
+    # TODO: return (data[:split_idx], data[split_idx:])
+    train = data[:split_idx]
+    val = data[split_idx:]
+    return train, val
 
 # Step 38 - pick_block_size (not yet solved)
 # TODO: implement
