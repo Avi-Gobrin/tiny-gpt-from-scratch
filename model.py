@@ -273,8 +273,21 @@ def stable_softmax_1d(logits):
     new_arr = new_arr / (sum_all(new_arr))
     return new_arr
 
-# Step 33 - stable_softmax_2d_rowwise (not yet solved)
-# TODO: implement
+# Step 33 - stable_softmax_2d_rowwise
+import numpy as np
+
+def stable_softmax_2d_rowwise(logits):
+    """Row-wise numerically stable softmax of a 2D logits array."""
+    # TODO: turn each row of logits into a probability distribution without overflowing
+    res = np.array(logits)
+    res = res - find_max_with_axis(res)
+    res = array_exp(res)
+    res = res / sum_keepdims(res, 1)
+    return res
+
+def find_max_with_axis(arr):
+    "return the max but add back the axis (ie instead of (int, ) we get (int, 1)"
+    return np.expand_dims(max_along_axis(arr, 1), 1)
 
 # Step 34 - read_text_file (not yet solved)
 # TODO: implement
