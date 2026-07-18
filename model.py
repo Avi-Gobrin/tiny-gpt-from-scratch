@@ -329,8 +329,13 @@ def pick_block_size(default_size):
     else:
         return 1
 
-# Step 39 - slice_x_at_offset (not yet solved)
-# TODO: implement
+# Step 39 - slice_x_at_offset
+import numpy as np
+
+def slice_x_at_offset(data, i, block_size):
+    """Return the input window data[i : i + block_size]."""
+    # TODO: extract a single input window of length block_size starting at index i
+    return data[i : i + block_size]
 
 # Step 40 - slice_y_at_offset (not yet solved)
 # TODO: implement
