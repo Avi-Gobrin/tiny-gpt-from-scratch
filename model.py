@@ -379,8 +379,13 @@ def get_batch(data, block_size, batch_size, rng):
     samp = sample_random_batch_offsets(len(data),block_size,batch_size,rng)
     return (stack_x_batch(data, samp, block_size), stack_y_batch(data, samp, block_size))
 
-# Step 45 - allocate_count_matrix (not yet solved)
-# TODO: implement
+# Step 45 - allocate_count_matrix
+import numpy as np
+
+def allocate_count_matrix(vocab_size):
+    """Allocate a (V, V) integer zero matrix for bigram counts."""
+    # TODO: return a (vocab_size, vocab_size) integer array of zeros.
+    return  np.zeros((vocab_size,vocab_size), dtype=int)
 
 # Step 46 - loop_fill_counts (not yet solved)
 # TODO: implement
