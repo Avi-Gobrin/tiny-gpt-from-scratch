@@ -320,8 +320,14 @@ def slice_train_and_val(data, split_idx):
     val = data[split_idx:]
     return train, val
 
-# Step 38 - pick_block_size (not yet solved)
-# TODO: implement
+# Step 38 - pick_block_size
+def pick_block_size(default_size):
+    """Return the context length (block_size) for training windows."""
+    # TODO: return an integer block size, at least 1, derived from default_size
+    if default_size > 0:
+        return default_size
+    else:
+        return 1
 
 # Step 39 - slice_x_at_offset (not yet solved)
 # TODO: implement
