@@ -415,8 +415,17 @@ def add_one_smoothing(n_matrix):
     # TODO: apply +1 Laplace smoothing to the bigram count matrix
     return n_matrix + 1
 
-# Step 49 - row_sums_of_counts (not yet solved)
-# TODO: implement
+# Step 49 - row_sums_of_counts
+def row_sums_of_counts(n_matrix):
+    """Return per-row sums of n_matrix with shape (V, 1)."""
+    # TODO: compute per-row sums of the count matrix as a column vector for normalization.
+    res_list = []
+    
+    for row in n_matrix:
+        row_total = sum_keepdims(row, 0)
+        res_list.append(row_total)
+
+    return np.array(res_list)
 
 # Step 50 - normalize_counts_to_probs (not yet solved)
 # TODO: implement
