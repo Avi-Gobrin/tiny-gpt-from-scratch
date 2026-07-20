@@ -427,8 +427,12 @@ def row_sums_of_counts(n_matrix):
 
     return np.array(res_list)
 
-# Step 50 - normalize_counts_to_probs (not yet solved)
-# TODO: implement
+# Step 50 - normalize_counts_to_probs
+def normalize_counts_to_probs(n_matrix):
+    """Normalize a (V, V) count matrix into a row-stochastic probability matrix."""
+    # TODO: divide each row of n_matrix by its row sum to produce probabilities
+    row_sum = row_sums_of_counts(n_matrix)
+    return n_matrix / row_sum
 
 # Step 51 - sample_next_token (not yet solved)
 # TODO: implement
