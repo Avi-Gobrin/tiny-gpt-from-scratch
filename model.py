@@ -554,11 +554,29 @@ def cross_entropy_loss(probs, targets):
     # TODO: gather correct-token probs, take log, average the negatives
     return -np.mean(array_log(gather_correct_token_probs(probs,targets)))
 
-# Step 66 - derive_dlogits_on_paper (not yet solved)
-# TODO: implement
+# Step 66 - derive_dlogits_on_paper
+def derive_dlogits_on_paper():
+    """Return a string summarizing the derivation of dL/dlogits for mean cross-entropy."""
+    # TODO: return a short written derivation ending in dL/dlogits = (probs - onehot(targets)) / B
+    return """
+    Paper derivation, not a computation.
 
-# Step 67 - compute_dlogits (not yet solved)
-# TODO: implement
+    Loss for one example: L = -log(softmax(logits)[y])
+    Let p = softmax(logits). Then:
+        dL/dlogits_i = p_i - 1[i == y]
+    For a batch of N examples, averaging the loss means dividing by N:
+        dlogits = (p - onehot(y)) / N
+        dL/dlogits = (probs - onehot(targets)) / B
+    """
+
+# Step 67 - compute_dlogits
+def compute_dlogits(probs, targets):
+    """Gradient of mean cross-entropy w.r.t. logits. probs: (B,V), targets: (B,)."""
+    # TODO: return dL/dlogits of shape (B, V) averaged over the batch.
+    n, vocab_size = probs.shape
+    y_onehot = one_hot_encode_batch(y_ids, vocab_size)
+    dlogits = (probs - y_onehot) / n
+    return dlogits
 
 # Step 68 - derive_dw_on_paper (not yet solved)
 # TODO: implement
