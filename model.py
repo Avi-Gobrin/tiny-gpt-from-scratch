@@ -619,17 +619,24 @@ def train_neural_bigram_loop(w, data, block_size, batch_size, learning_rate, num
     """Run the neural bigram training loop and return {'w', 'loss_history'}."""
     # TODO: repeatedly sample a batch, run one training step, and log loss every log_every steps
     # w = scale_w_small(initialize_w_random(batch_size, rng), 0.01)
+    w = scale_w_small(initialize_w_random(vocab_size, rng), 0.01)
     losses = []
-    for _ in range(num_steps):
-        offsets = sample_random_batch_offsets(len(data), 1, batch_size)
-        ids = data[offsets]
-        targets = data[offsets + 1]
-        w, loss = run_one_training_step(w, ids, targets, learning_rate)
-        losses.append(loss)
+    for _ in range(n_steps):
+        offsets = sample_random_batch_offsets(len(data), 1, batch_size, rng)
+        step = run_one_training_step(w, data[offsets], data[offsets + 1], learning_rate)
+        w = step['w']
+        losses.append(step['loss'])
     return w, losses
 
-# Step 73 - sample_from_neural_bigram (not yet solved)
-# TODO: implement
+# Step 73 - sample_from_neural_bigram
+def sample_from_neural_bigram(w, start_id, num_tokens, itos):
+    """Generate a string by repeatedly sampling from softmax of W[id]."""
+    # TODO: starting from start_id, sample num_tokens new ids and decode the full sequence...
+    ids = [int(start_id)]
+    for _ in range(num_tokens):
+        probs = stable_softmax_1d(w[ids[-1]])
+        ids.append(int(np.random.choice(len(probs), p=probs)))
+    return decode_ids(ids, itos)
 
 # Step 74 - linear_forward (not yet solved)
 # TODO: implement
