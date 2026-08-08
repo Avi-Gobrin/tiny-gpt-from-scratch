@@ -618,15 +618,15 @@ def run_one_training_step(w, ids, targets, learning_rate):
 def train_neural_bigram_loop(w, data, block_size, batch_size, learning_rate, num_steps, log_every):
     """Run the neural bigram training loop and return {'w', 'loss_history'}."""
     # TODO: repeatedly sample a batch, run one training step, and log loss every log_every steps
-    # w = scale_w_small(initialize_w_random(batch_size, rng), 0.01)
-    w = scale_w_small(initialize_w_random(vocab_size, rng), 0.01)
-    losses = []
-    for _ in range(n_steps):
-        offsets = sample_random_batch_offsets(len(data), 1, batch_size, rng)
-        step = run_one_training_step(w, data[offsets], data[offsets + 1], learning_rate)
-        w = step['w']
-        losses.append(step['loss'])
-    return w, losses
+    rng = np.random.default_rng(0)
+    loss_history = []
+    for step in range(num_steps):
+        xb, yb = get_batch(data, block_size, batch_size, rng)
+        result = run_one_training_step(w, xb.reshape(-1), yb.reshape(-1), learning_rate)
+        w = result['w']
+        if step % log_every == 0:
+            loss_history.append(result['loss'])
+    return {'w': w, 'loss_history': loss_history}
 
 # Step 73 - sample_from_neural_bigram
 def sample_from_neural_bigram(w, start_id, num_tokens, itos):
