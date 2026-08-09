@@ -1220,8 +1220,10 @@ def adam_update_second_moment(v, grad, beta2=0.999):
     """Running average of the squared gradient."""
     return beta2 * v + (1 - beta2) * grad ** 2
 
-# Step 152 - adam_bias_correction (not yet solved)
-# TODO: implement
+# Step 152 - adam_bias_correction
+def adam_bias_correction(m, v, beta1, beta2, t):
+    """Undo the bias from starting both moments at zero."""
+    return {'m_hat': m / (1 - beta1 ** t), 'v_hat': v / (1 - beta2 ** t)}
 
 # Step 153 - adam_parameter_update (not yet solved)
 # TODO: implement
