@@ -1351,6 +1351,7 @@ def generation_loop_for_n_steps(params, prompt_ids, n_new_tokens, block_size,
         ids = append_token_to_sequence(ids, sample_one_token(softmax_to_probs(logits), rng))
     return ids
 
-# Step 166 - decode_final_sequence (not yet solved)
-# TODO: implement
-
+# Step 166 - decode_final_sequence
+def decode_final_sequence(ids, itos):
+    """Turn the generated token ids back into text."""
+    return decode_ids([int(i) for i in np.asarray(ids).reshape(-1)], itos)
