@@ -834,8 +834,10 @@ def softmax_attention_weights(scores):
     e = array_exp(scores - np.max(scores, axis=-1, keepdims=True))
     return e / np.sum(e, axis=-1, keepdims=True)
 
-# Step 108 - attention_weighted_values (not yet solved)
-# TODO: implement
+# Step 108 - attention_weighted_values
+def attention_weighted_values(weights, v):
+    """Mix the value vectors using the attention weights."""
+    return np.matmul(weights, v)
 
 # Step 109 - apply_output_projection (not yet solved)
 # TODO: implement
