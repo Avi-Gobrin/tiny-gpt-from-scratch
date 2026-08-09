@@ -1225,8 +1225,10 @@ def adam_bias_correction(m, v, beta1, beta2, t):
     """Undo the bias from starting both moments at zero."""
     return {'m_hat': m / (1 - beta1 ** t), 'v_hat': v / (1 - beta2 ** t)}
 
-# Step 153 - adam_parameter_update (not yet solved)
-# TODO: implement
+# Step 153 - adam_parameter_update
+def adam_parameter_update(param, m_hat, v_hat, learning_rate, eps=1e-8):
+    """Step against the gradient, scaled per coordinate by 1 / sqrt(v_hat)."""
+    return param - learning_rate * m_hat / (np.sqrt(v_hat) + eps)
 
 # Step 154 - wire_full_training_loop (not yet solved)
 # TODO: implement
