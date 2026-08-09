@@ -1010,8 +1010,10 @@ def multihead_attention_backward(dy, cache):
             'dW_q': grads['dW_q'], 'dW_k': grads['dW_k'],
             'dW_v': grads['dW_v'], 'dW_o': proj['dw_o']}
 
-# Step 131 - ffn_linear_one_forward (not yet solved)
-# TODO: implement
+# Step 131 - ffn_linear_one_forward
+def ffn_linear_one_forward(x, w1, b1):
+    """Expand from d_model up to d_ff."""
+    return bias_add_forward(linear_forward(x, w1)['y'], b1)['y']
 
 # Step 132 - ffn_activation_forward (not yet solved)
 # TODO: implement
