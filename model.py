@@ -1160,8 +1160,29 @@ def full_model_forward(params, ids, eps=1e-5):
                       'norm': norm['cache'], 'head': head['cache'],
                       'seq_len': ids.shape[-1]}}
 
-# Step 146 - full_model_backward (not yet solved)
-# TODO: implement
+# Step 146 - full_model_backward
+def full_model_backward(params, cache, targets):
+    """Return gradients for every parameter, laid out exactly like params."""
+    head, logits = cache['head'], cache['logits']
+    vocab_size = logits.shape[-1]
+    probs = logits_to_probs_rowwise(logits.reshape(-1, vocab_size))
+    dlogits = softmax_cross_entropy_backward(
+        probs, np.asarray(targets).reshape(-1)).reshape(logits.shape)
+
+    flat = {'x': flatten_tokens(head['x']), 'w': head['w']}
+    norm = layernorm_backward_implementation(
+        linear_backward_dx(dlogits, flat), cache['norm'])
+    blocks = backward_through_all_blocks(norm['dx'], cache['blocks'])
+    emb = embedding_sum_backward(blocks['dx'])
+
+    d_pos_emb = np.zeros_like(params['pos_emb'])
+    d_pos_emb[:cache['seq_len']] = emb['d_pos']
+    return {'tok_emb': token_embedding_backward(emb['d_tok'], cache['tok']),
+            'pos_emb': d_pos_emb,
+            'blocks': blocks['grads'],
+            'ln_f': {'gamma': norm['dgamma'], 'beta': norm['dbeta']},
+            'lm_head': {'w_lm': linear_backward_dw(flatten_tokens(dlogits), flat),
+                        'b_lm': bias_add_backward_db(flatten_tokens(dlogits))}}
 
 # Step 147 - initialize_adam_moments (not yet solved)
 # TODO: implement
