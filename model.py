@@ -771,8 +771,10 @@ def create_positional_embedding(block_size, d_model, scale=0.02):
     """One small random vector per position in the context window."""
     return np.random.randn(block_size, d_model) * scale
 
-# Step 96 - slice_positional_embedding (not yet solved)
-# TODO: implement
+# Step 96 - slice_positional_embedding
+def slice_positional_embedding(pos_emb, seq_len):
+    """Take the first seq_len positions; sequences may be shorter than block_size."""
+    return pos_emb[:seq_len]
 
 # Step 97 - add_token_and_positional_embeddings (not yet solved)
 # TODO: implement
