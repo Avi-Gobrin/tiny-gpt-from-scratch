@@ -839,8 +839,10 @@ def attention_weighted_values(weights, v):
     """Mix the value vectors using the attention weights."""
     return np.matmul(weights, v)
 
-# Step 109 - apply_output_projection (not yet solved)
-# TODO: implement
+# Step 109 - apply_output_projection
+def apply_output_projection(context, w_o):
+    """Project the attention context back into model space."""
+    return {'y': matmul(context, w_o), 'cache': {'context': context, 'w_o': w_o}}
 
 # Step 110 - output_projection_backward (not yet solved)
 # TODO: implement
