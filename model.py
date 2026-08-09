@@ -703,8 +703,18 @@ def layernorm_forward_normalize(x, mean, var, eps=1e-5):
     """Standardize x to zero mean and unit variance per row."""
     return (x - mean) / np.sqrt(var + eps)
 
-# Step 87 - layernorm_forward_affine (not yet solved)
-# TODO: implement
+# Step 87 - layernorm_forward_affine
+def layernorm_forward_affine(x_hat, gamma, beta):
+    """Rescale and shift the normalized activations."""
+    return gamma * x_hat + beta
+
+def layernorm_forward(x, gamma, beta, eps=1e-5):
+    "the four LayerNorm steps in one call, with the cache the backward needs"
+    mean = layernorm_forward_mean(x)
+    var = layernorm_forward_variance(x)
+    x_hat = layernorm_forward_normalize(x, mean, var, eps)
+    return {'y': layernorm_forward_affine(x_hat, gamma, beta),
+            'cache': {'x_hat': x_hat, 'std': np.sqrt(var + eps), 'gamma': gamma}}
 
 # Step 88 - layernorm_backward_subtract_mean (not yet solved)
 # TODO: implement
