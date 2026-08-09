@@ -1230,8 +1230,51 @@ def adam_parameter_update(param, m_hat, v_hat, learning_rate, eps=1e-8):
     """Step against the gradient, scaled per coordinate by 1 / sqrt(v_hat)."""
     return param - learning_rate * m_hat / (np.sqrt(v_hat) + eps)
 
-# Step 154 - wire_full_training_loop (not yet solved)
-# TODO: implement
+# Step 154 - wire_full_training_loop
+def adam_update_tree(params, grads, m, v, t, learning_rate, beta1=0.9, beta2=0.999, eps=1e-8):
+    "apply one Adam update to every array in the parameter tree"
+    if isinstance(params, np.ndarray):
+        m = adam_update_first_moment(m, grads, beta1)
+        v = adam_update_second_moment(v, grads, beta2)
+        hats = adam_bias_correction(m, v, beta1, beta2, t)
+        return adam_parameter_update(params, hats['m_hat'], hats['v_hat'],
+                                     learning_rate, eps), m, v
+    if isinstance(params, dict):
+        updated = dict(params)
+        for key in grads:
+            updated[key], m[key], v[key] = adam_update_tree(
+                params[key], grads[key], m[key], v[key], t, learning_rate, beta1, beta2, eps)
+        return updated, m, v
+    if isinstance(params, list):
+        updated = list(params)
+        for i in range(len(grads)):
+            updated[i], m[i], v[i] = adam_update_tree(
+                params[i], grads[i], m[i], v[i], t, learning_rate, beta1, beta2, eps)
+        return updated, m, v
+    return params, m, v
+
+def batch_cross_entropy(logits, targets):
+    "mean cross-entropy over every position of a (B, T, V) logits tensor"
+    probs = logits_to_probs_rowwise(logits.reshape(-1, logits.shape[-1]))
+    return cross_entropy_loss(probs, np.asarray(targets).reshape(-1))
+
+def wire_full_training_loop(params, data, block_size, batch_size, learning_rate,
+                            num_steps, log_every):
+    """Train the full model with Adam and return {'params', 'loss_history'}."""
+    rng = np.random.default_rng(0)
+    moments = initialize_adam_moments(params)
+    m, v = moments['m'], moments['v']
+    t = initialize_adam_step_counter()
+    loss_history = []
+    for step in range(num_steps):
+        x, y = get_batch(data, block_size, batch_size, rng)
+        out = full_model_forward(params, x)
+        grads = full_model_backward(params, out['cache'], y)
+        t = adam_increment_step(t)
+        params, m, v = adam_update_tree(params, grads, m, v, t, learning_rate)
+        if step % log_every == 0:
+            loss_history.append(batch_cross_entropy(out['logits'], y))
+    return {'params': params, 'loss_history': loss_history}
 
 # Step 155 - logging_and_validation_loss (not yet solved)
 # TODO: implement
