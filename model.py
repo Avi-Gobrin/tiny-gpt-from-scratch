@@ -786,8 +786,12 @@ def embedding_sum_backward(dy, cache=None):
     """Addition copies the gradient; positions are shared, so they sum over the batch."""
     return {'d_tok': dy, 'd_pos': np.sum(dy, axis=0)}
 
-# Step 99 - create_qkv_projections (not yet solved)
-# TODO: implement
+# Step 99 - create_qkv_projections
+def create_qkv_projections(d_model, d_head, scale=0.02):
+    """Separate query, key and value projection matrices."""
+    return {'W_q': np.random.randn(d_model, d_head) * scale,
+            'W_k': np.random.randn(d_model, d_head) * scale,
+            'W_v': np.random.randn(d_model, d_head) * scale}
 
 # Step 100 - compute_query (not yet solved)
 # TODO: implement
