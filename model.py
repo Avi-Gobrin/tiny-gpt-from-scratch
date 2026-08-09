@@ -698,8 +698,10 @@ def layernorm_forward_variance(x):
     """Per-row variance over the feature axis, kept as size 1."""
     return np.mean((x - layernorm_forward_mean(x)) ** 2, axis=-1, keepdims=True)
 
-# Step 86 - layernorm_forward_normalize (not yet solved)
-# TODO: implement
+# Step 86 - layernorm_forward_normalize
+def layernorm_forward_normalize(x, mean, var, eps=1e-5):
+    """Standardize x to zero mean and unit variance per row."""
+    return (x - mean) / np.sqrt(var + eps)
 
 # Step 87 - layernorm_forward_affine (not yet solved)
 # TODO: implement
