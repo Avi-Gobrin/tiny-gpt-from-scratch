@@ -1304,8 +1304,10 @@ def forward_to_get_logits(params, ids):
         ids = ids[None, :]
     return full_model_forward(params, ids)['logits']
 
-# Step 159 - take_last_position_logits (not yet solved)
-# TODO: implement
+# Step 159 - take_last_position_logits
+def take_last_position_logits(logits):
+    """Only the final position predicts the next token."""
+    return logits[..., -1, :]
 
 # Step 160 - apply_temperature (not yet solved)
 # TODO: implement
