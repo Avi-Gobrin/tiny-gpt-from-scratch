@@ -808,8 +808,10 @@ def compute_value(x, w_v):
     """V = x @ W_v"""
     return matmul(x, w_v)
 
-# Step 103 - compute_attention_scores (not yet solved)
-# TODO: implement
+# Step 103 - compute_attention_scores
+def compute_attention_scores(q, k):
+    """Q @ K.T over the last two axes: how much each position matches each other."""
+    return np.matmul(q, np.swapaxes(k, -1, -2))
 
 # Step 104 - scale_attention_scores (not yet solved)
 # TODO: implement
