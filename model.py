@@ -1339,8 +1339,17 @@ def append_token_to_sequence(ids, token_id):
     """Grow the running sequence by one token."""
     return np.append(np.asarray(ids), np.int64(token_id))
 
-# Step 165 - generation_loop_for_n_steps (not yet solved)
-# TODO: implement
+# Step 165 - generation_loop_for_n_steps
+def generation_loop_for_n_steps(params, prompt_ids, n_new_tokens, block_size,
+                                temperature=1.0, top_k=None, rng=None):
+    """Sample n_new_tokens ids, feeding each one back in as context."""
+    ids = np.asarray(prompt_ids, dtype=np.int64)
+    for _ in range(n_new_tokens):
+        context = crop_context_to_block_size(ids, block_size)
+        logits = take_last_position_logits(forward_to_get_logits(params, context))
+        logits = top_k_filter(apply_temperature(logits, temperature), top_k)
+        ids = append_token_to_sequence(ids, sample_one_token(softmax_to_probs(logits), rng))
+    return ids
 
 # Step 166 - decode_final_sequence (not yet solved)
 # TODO: implement
