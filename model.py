@@ -927,8 +927,12 @@ def compute_d_head(d_model, n_heads):
     """Width of a single attention head."""
     return d_model // n_heads
 
-# Step 124 - multihead_masked_softmax_scores (not yet solved)
-# TODO: implement
+# Step 124 - multihead_masked_softmax_scores
+def multihead_masked_softmax_scores(q, k):
+    """Scaled, causally masked, softmaxed attention weights of shape (B, H, T, T)."""
+    scores = scale_attention_scores(compute_attention_scores(q, k), q.shape[-1])
+    mask = build_causal_mask(get_multihead_sequence_length(q))
+    return softmax_attention_weights(apply_causal_mask(scores, mask))
 
 # Step 125 - multihead_weighted_sum (not yet solved)
 # TODO: implement
