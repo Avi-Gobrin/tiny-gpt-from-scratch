@@ -960,8 +960,55 @@ def multihead_output_projection_forward(context, w_o):
     """Project the merged heads back into model space."""
     return apply_output_projection(context, w_o)
 
-# Step 130 - multihead_reshape_transpose_backward (not yet solved)
-# TODO: implement
+# Step 130 - multihead_reshape_transpose_backward
+def multihead_reshape_transpose_backward(dy, n_heads):
+    """Undo merge and transpose: (B, T, D) -> (B, H, T, d_head)."""
+    return transpose_heads_to_front(reshape_to_heads(dy, n_heads))
+
+def flatten_tokens(x):
+    "collapse the batch and time axes so (B, T, D) matmuls behave like (N, D)"
+    return x.reshape(-1, x.shape[-1])
+
+def split_into_heads(x, n_heads):
+    "(B, T, D) -> (B, H, T, d_head)"
+    return transpose_heads_to_front(reshape_to_heads(x, n_heads))
+
+def multihead_attention_forward(x, attn):
+    "masked multi-head self-attention built from steps 100-129"
+    n_heads = attn['n_heads']
+    q = split_into_heads(compute_query(x, attn['W_q']), n_heads)
+    k = split_into_heads(compute_key(x, attn['W_k']), n_heads)
+    v = split_into_heads(compute_value(x, attn['W_v']), n_heads)
+    weights = multihead_masked_softmax_scores(q, k)
+    context = merge_heads_to_d_model(
+        transpose_heads_to_back(multihead_weighted_sum(weights, v)))
+    out = multihead_output_projection_forward(flatten_tokens(context), attn['W_o'])
+    return {'y': out['y'].reshape(x.shape),
+            'cache': {'x': x, 'q': q, 'k': k, 'v': v, 'weights': weights,
+                      'n_heads': n_heads, 'proj': out['cache'], 'attn': attn}}
+
+def multihead_attention_backward(dy, cache):
+    "reverse of multihead_attention_forward, built from steps 110-115 and 130"
+    attn, n_heads = cache['attn'], cache['n_heads']
+    proj = output_projection_backward(flatten_tokens(dy), cache['proj'])
+    d_context = multihead_reshape_transpose_backward(
+        proj['d_context'].reshape(dy.shape), n_heads)
+
+    values = attention_value_backward(d_context, cache['weights'], cache['v'])
+    d_scores = scale_scores_backward(
+        masked_softmax_backward(values['d_weights'], cache['weights']),
+        cache['q'].shape[-1])
+    qk = qk_scores_backward(d_scores, cache['q'], cache['k'])
+
+    def merge(heads):
+        return flatten_tokens(merge_heads_to_d_model(transpose_heads_to_back(heads)))
+
+    grads = qkv_projection_backward(
+        merge(qk['dq']), merge(qk['dk']), merge(values['d_v']),
+        {'x': flatten_tokens(cache['x']), **attn})
+    return {'dx': grads['dx'].reshape(cache['x'].shape),
+            'dW_q': grads['dW_q'], 'dW_k': grads['dW_k'],
+            'dW_v': grads['dW_v'], 'dW_o': proj['dw_o']}
 
 # Step 131 - ffn_linear_one_forward (not yet solved)
 # TODO: implement
