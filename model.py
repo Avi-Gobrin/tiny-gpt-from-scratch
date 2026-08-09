@@ -856,8 +856,10 @@ def attention_value_backward(d_context, weights, v):
     return {'d_weights': np.matmul(d_context, np.swapaxes(v, -1, -2)),
             'd_v': np.matmul(np.swapaxes(weights, -1, -2), d_context)}
 
-# Step 112 - masked_softmax_backward (not yet solved)
-# TODO: implement
+# Step 112 - masked_softmax_backward
+def masked_softmax_backward(d_weights, weights):
+    """Softmax Jacobian; masked slots have weight 0 and stay 0."""
+    return weights * (d_weights - np.sum(d_weights * weights, axis=-1, keepdims=True))
 
 # Step 113 - scale_scores_backward (not yet solved)
 # TODO: implement
