@@ -1044,8 +1044,10 @@ def ffn_backward(dy, cache):
             'dw2': linear_backward_dw(flatten_tokens(dy), {'x': flatten_tokens(cache['a'])}),
             'db2': bias_add_backward_db(flatten_tokens(dy))}
 
-# Step 135 - residual_forward (not yet solved)
-# TODO: implement
+# Step 135 - residual_forward
+def residual_forward(x, sublayer_out):
+    """Skip connection: add the sublayer output back onto its input."""
+    return {'y': x + sublayer_out, 'cache': {}}
 
 # Step 136 - residual_backward (not yet solved)
 # TODO: implement
