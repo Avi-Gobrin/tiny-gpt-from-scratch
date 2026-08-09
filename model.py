@@ -672,8 +672,10 @@ def bias_add_backward_db(dy, cache=None):
     """The bias is shared across rows, so its gradient sums over the batch."""
     return np.sum(dy, axis=0)
 
-# Step 81 - relu_forward (not yet solved)
-# TODO: implement
+# Step 81 - relu_forward
+def relu_forward(x):
+    """Elementwise max(x, 0), caching the input for the backward mask."""
+    return {'y': np.maximum(x, 0.0), 'cache': {'x': x}}
 
 # Step 82 - relu_backward (not yet solved)
 # TODO: implement
