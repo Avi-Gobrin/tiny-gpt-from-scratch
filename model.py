@@ -922,8 +922,10 @@ def get_multihead_sequence_length(x):
     """Sequence length sits on axis 2 in (B, H, T, d_head) layout."""
     return x.shape[2]
 
-# Step 123 - compute_d_head (not yet solved)
-# TODO: implement
+# Step 123 - compute_d_head
+def compute_d_head(d_model, n_heads):
+    """Width of a single attention head."""
+    return d_model // n_heads
 
 # Step 124 - multihead_masked_softmax_scores (not yet solved)
 # TODO: implement
