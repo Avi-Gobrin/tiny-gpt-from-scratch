@@ -934,8 +934,10 @@ def multihead_masked_softmax_scores(q, k):
     mask = build_causal_mask(get_multihead_sequence_length(q))
     return softmax_attention_weights(apply_causal_mask(scores, mask))
 
-# Step 125 - multihead_weighted_sum (not yet solved)
-# TODO: implement
+# Step 125 - multihead_weighted_sum
+def multihead_weighted_sum(weights, v):
+    """Mix each head's value vectors using that head's attention weights."""
+    return np.matmul(weights, v)
 
 # Step 126 - transpose_heads_to_back (not yet solved)
 # TODO: implement
