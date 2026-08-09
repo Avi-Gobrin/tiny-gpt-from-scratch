@@ -1049,8 +1049,10 @@ def residual_forward(x, sublayer_out):
     """Skip connection: add the sublayer output back onto its input."""
     return {'y': x + sublayer_out, 'cache': {}}
 
-# Step 136 - residual_backward (not yet solved)
-# TODO: implement
+# Step 136 - residual_backward
+def residual_backward(dy, cache=None):
+    """Addition sends the same gradient down both branches."""
+    return {'dx': dy, 'd_sublayer': dy}
 
 # Step 137 - pre_layernorm_sublayer_forward (not yet solved)
 # TODO: implement
