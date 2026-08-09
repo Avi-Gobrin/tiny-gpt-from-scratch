@@ -752,8 +752,10 @@ def create_token_embedding(vocab_size, d_model, scale=0.02):
     """One small random vector per token in the vocabulary."""
     return np.random.randn(vocab_size, d_model) * scale
 
-# Step 93 - token_embedding_forward (not yet solved)
-# TODO: implement
+# Step 93 - token_embedding_forward
+def token_embedding_forward(tok_emb, ids):
+    """Look up the embedding row for every id: (B, T) -> (B, T, d_model)."""
+    return {'y': tok_emb[ids], 'cache': {'ids': ids, 'vocab_size': len(tok_emb)}}
 
 # Step 94 - token_embedding_backward (not yet solved)
 # TODO: implement
