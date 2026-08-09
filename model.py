@@ -1069,8 +1069,16 @@ def pre_layernorm_sublayer_backward(dy, cache, sublayer_backward):
     norm = layernorm_backward_implementation(sub['dx'], cache['norm'])
     return {'dx': split['dx'] + norm['dx'], 'sub': sub, 'norm': norm}
 
-# Step 138 - transformer_block_forward (not yet solved)
-# TODO: implement
+# Step 138 - transformer_block_forward
+def transformer_block_forward(x, block, eps=1e-5):
+    """One pre-LN block: attention sublayer, then feed-forward sublayer."""
+    attn = pre_layernorm_sublayer_forward(
+        x, block['ln1']['gamma'], block['ln1']['beta'],
+        lambda h: multihead_attention_forward(h, block['attn']), eps)
+    ffn = pre_layernorm_sublayer_forward(
+        attn['y'], block['ln2']['gamma'], block['ln2']['beta'],
+        lambda h: ffn_forward(h, block['ffn']), eps)
+    return {'y': ffn['y'], 'cache': {'attn': attn['cache'], 'ffn': ffn['cache']}}
 
 # Step 139 - transformer_block_backward (not yet solved)
 # TODO: implement
