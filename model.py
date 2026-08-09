@@ -757,8 +757,14 @@ def token_embedding_forward(tok_emb, ids):
     """Look up the embedding row for every id: (B, T) -> (B, T, d_model)."""
     return {'y': tok_emb[ids], 'cache': {'ids': ids, 'vocab_size': len(tok_emb)}}
 
-# Step 94 - token_embedding_backward (not yet solved)
-# TODO: implement
+# Step 94 - token_embedding_backward
+def token_embedding_backward(dy, cache):
+    """Scatter-add the gradients back into the table; repeated ids accumulate."""
+    ids = np.asarray(cache['ids']).reshape(-1)
+    rows = dy.reshape(len(ids), -1)
+    d_emb = np.zeros((cache['vocab_size'], rows.shape[1]))
+    np.add.at(d_emb, ids, rows)
+    return d_emb
 
 # Step 95 - create_positional_embedding (not yet solved)
 # TODO: implement
