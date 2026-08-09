@@ -1327,8 +1327,12 @@ def softmax_to_probs(logits):
     """Turn next-token logits into a probability distribution."""
     return stable_softmax_1d(np.asarray(logits).reshape(-1))
 
-# Step 163 - sample_one_token (not yet solved)
-# TODO: implement
+# Step 163 - sample_one_token
+def sample_one_token(probs, rng=None):
+    """Draw one token id from the next-token distribution."""
+    if rng is None:
+        return int(np.random.choice(len(probs), p=probs))
+    return int(rng.choice(len(probs), p=probs))
 
 # Step 164 - append_token_to_sequence (not yet solved)
 # TODO: implement
