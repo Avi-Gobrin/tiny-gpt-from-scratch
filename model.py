@@ -633,8 +633,10 @@ def sample_from_neural_bigram(w, start_id, num_tokens, itos):
         ids.append(int(np.random.choice(len(probs), p=probs)))
     return decode_ids(ids, itos)
 
-# Step 74 - linear_forward (not yet solved)
-# TODO: implement
+# Step 74 - linear_forward
+def linear_forward(x, w):
+    """Return {'y': X @ W, 'cache': ...} for the linear layer."""
+    return {'y': matmul(x, w), 'cache': {'x': x, 'w': w}}
 
 # Step 75 - derive_dx_on_paper (not yet solved)
 # TODO: implement
