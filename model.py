@@ -781,8 +781,10 @@ def add_token_and_positional_embeddings(tok_vectors, pos_vectors):
     """Add (T, D) position vectors to (B, T, D) token vectors by broadcasting."""
     return {'y': tok_vectors + pos_vectors, 'cache': {}}
 
-# Step 98 - embedding_sum_backward (not yet solved)
-# TODO: implement
+# Step 98 - embedding_sum_backward
+def embedding_sum_backward(dy, cache=None):
+    """Addition copies the gradient; positions are shared, so they sum over the batch."""
+    return {'d_tok': dy, 'd_pos': np.sum(dy, axis=0)}
 
 # Step 99 - create_qkv_projections (not yet solved)
 # TODO: implement
