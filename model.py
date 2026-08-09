@@ -955,8 +955,10 @@ def merge_heads_to_d_model(x):
     b, t, h, d_head = x.shape
     return x.reshape(b, t, h * d_head)
 
-# Step 129 - multihead_output_projection_forward (not yet solved)
-# TODO: implement
+# Step 129 - multihead_output_projection_forward
+def multihead_output_projection_forward(context, w_o):
+    """Project the merged heads back into model space."""
+    return apply_output_projection(context, w_o)
 
 # Step 130 - multihead_reshape_transpose_backward (not yet solved)
 # TODO: implement
