@@ -776,8 +776,10 @@ def slice_positional_embedding(pos_emb, seq_len):
     """Take the first seq_len positions; sequences may be shorter than block_size."""
     return pos_emb[:seq_len]
 
-# Step 97 - add_token_and_positional_embeddings (not yet solved)
-# TODO: implement
+# Step 97 - add_token_and_positional_embeddings
+def add_token_and_positional_embeddings(tok_vectors, pos_vectors):
+    """Add (T, D) position vectors to (B, T, D) token vectors by broadcasting."""
+    return {'y': tok_vectors + pos_vectors, 'cache': {}}
 
 # Step 98 - embedding_sum_backward (not yet solved)
 # TODO: implement
