@@ -662,8 +662,10 @@ def linear_backward_dw(dy, cache):
     """Gradient w.r.t. the linear layer weights: X.T @ dY."""
     return matmul(transpose_matrix(cache['x']), dy)
 
-# Step 79 - bias_add_forward (not yet solved)
-# TODO: implement
+# Step 79 - bias_add_forward
+def bias_add_forward(x, b):
+    """Broadcast-add a (D,) bias to every row of x."""
+    return {'y': x + b, 'cache': {'x': x, 'b': b}}
 
 # Step 80 - bias_add_backward_db (not yet solved)
 # TODO: implement
