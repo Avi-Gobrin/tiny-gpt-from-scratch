@@ -949,8 +949,11 @@ def get_multihead_output_sequence_length(x):
     """After transposing back, sequence length is on axis 1 again."""
     return x.shape[1]
 
-# Step 128 - merge_heads_to_d_model (not yet solved)
-# TODO: implement
+# Step 128 - merge_heads_to_d_model
+def merge_heads_to_d_model(x):
+    """(B, T, H, d_head) -> (B, T, d_model), concatenating the heads."""
+    b, t, h, d_head = x.shape
+    return x.reshape(b, t, h * d_head)
 
 # Step 129 - multihead_output_projection_forward (not yet solved)
 # TODO: implement
