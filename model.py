@@ -866,8 +866,11 @@ def scale_scores_backward(d_scores, d_head):
     """Dividing the scores by sqrt(d_head) divides their gradient too."""
     return d_scores / np.sqrt(d_head)
 
-# Step 114 - qk_scores_backward (not yet solved)
-# TODO: implement
+# Step 114 - qk_scores_backward
+def qk_scores_backward(d_scores, q, k):
+    """Return {'dq', 'dk'} for scores = Q @ K.T."""
+    return {'dq': np.matmul(d_scores, k),
+            'dk': np.matmul(np.swapaxes(d_scores, -1, -2), q)}
 
 # Step 115 - qkv_projection_backward (not yet solved)
 # TODO: implement
