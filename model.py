@@ -677,8 +677,10 @@ def relu_forward(x):
     """Elementwise max(x, 0), caching the input for the backward mask."""
     return {'y': np.maximum(x, 0.0), 'cache': {'x': x}}
 
-# Step 82 - relu_backward (not yet solved)
-# TODO: implement
+# Step 82 - relu_backward
+def relu_backward(dy, cache):
+    """Gradient flows only where the input was positive."""
+    return dy * (cache['x'] > 0)
 
 # Step 83 - softmax_cross_entropy_backward (not yet solved)
 # TODO: implement
