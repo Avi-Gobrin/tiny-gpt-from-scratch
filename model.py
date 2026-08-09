@@ -1184,8 +1184,21 @@ def full_model_backward(params, cache, targets):
             'lm_head': {'w_lm': linear_backward_dw(flatten_tokens(dlogits), flat),
                         'b_lm': bias_add_backward_db(flatten_tokens(dlogits))}}
 
-# Step 147 - initialize_adam_moments (not yet solved)
-# TODO: implement
+# Step 147 - initialize_adam_moments
+def zeros_like_tree(node):
+    "mirror a nested dict/list of arrays, replacing every array with zeros"
+    if isinstance(node, np.ndarray):
+        return np.zeros_like(node)
+    if isinstance(node, dict):
+        return {k: zeros_like_tree(v) for k, v in node.items()
+                if isinstance(v, (np.ndarray, dict, list))}
+    if isinstance(node, list):
+        return [zeros_like_tree(v) for v in node]
+    return None
+
+def initialize_adam_moments(params):
+    """Zero-filled first and second moment trees shaped like params."""
+    return {'m': zeros_like_tree(params), 'v': zeros_like_tree(params)}
 
 # Step 148 - initialize_adam_step_counter (not yet solved)
 # TODO: implement
