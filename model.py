@@ -1314,8 +1314,13 @@ def apply_temperature(logits, temperature):
     """Below 1 sharpens the distribution, above 1 flattens it."""
     return logits / temperature
 
-# Step 161 - top_k_filter (not yet solved)
-# TODO: implement
+# Step 161 - top_k_filter
+def top_k_filter(logits, k):
+    """Keep the k largest logits and send the rest to -inf."""
+    if k is None or k >= logits.shape[-1]:
+        return logits
+    kth = np.partition(logits, -k, axis=-1)[..., -k][..., None]
+    return np.where(logits >= kth, logits, -np.inf)
 
 # Step 162 - softmax_to_probs (not yet solved)
 # TODO: implement
