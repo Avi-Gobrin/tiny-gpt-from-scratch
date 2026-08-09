@@ -1095,8 +1095,22 @@ def transformer_block_backward(dy, cache):
                 'ffn': {'w1': ffn['sub']['dw1'], 'b1': ffn['sub']['db1'],
                         'w2': ffn['sub']['dw2'], 'b2': ffn['sub']['db2']}}}
 
-# Step 140 - stack_transformer_blocks (not yet solved)
-# TODO: implement
+# Step 140 - stack_transformer_blocks
+def stack_transformer_blocks(n_layers, d_model, n_heads, d_ff, scale=0.02):
+    """Build n_layers independent sets of block parameters."""
+    blocks = []
+    for _ in range(n_layers):
+        blocks.append({
+            'ln1': {'gamma': np.ones(d_model), 'beta': np.zeros(d_model)},
+            'ln2': {'gamma': np.ones(d_model), 'beta': np.zeros(d_model)},
+            'attn': {'n_heads': n_heads,
+                     **create_multihead_qkv_projections(d_model, n_heads, scale),
+                     'W_o': create_multihead_output_projection(d_model, scale)},
+            'ffn': {'w1': np.random.randn(d_model, d_ff) * scale,
+                    'b1': np.zeros(d_ff),
+                    'w2': np.random.randn(d_ff, d_model) * scale,
+                    'b2': np.zeros(d_model)}})
+    return blocks
 
 # Step 141 - forward_through_all_blocks (not yet solved)
 # TODO: implement
