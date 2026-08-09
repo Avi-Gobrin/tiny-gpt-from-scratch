@@ -823,8 +823,10 @@ def build_causal_mask(seq_len):
     """Lower-triangular boolean mask: True where a position is allowed to attend."""
     return np.tril(np.ones((seq_len, seq_len), dtype=bool))
 
-# Step 106 - apply_causal_mask (not yet solved)
-# TODO: implement
+# Step 106 - apply_causal_mask
+def apply_causal_mask(scores, mask):
+    """Send future positions to -inf so softmax gives them exactly zero weight."""
+    return np.where(mask, scores, -np.inf)
 
 # Step 107 - softmax_attention_weights (not yet solved)
 # TODO: implement
