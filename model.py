@@ -726,8 +726,14 @@ def layernorm_backward_divide_std(dy, x_hat, std):
     """Backward of x_hat = centered / std, where std also depends on x."""
     return (dy - x_hat * np.mean(dy * x_hat, axis=-1, keepdims=True)) / std
 
-# Step 90 - layernorm_backward_full (not yet solved)
-# TODO: implement
+# Step 90 - layernorm_backward_full
+def layernorm_backward_full():
+    """Return notes deriving the full LayerNorm backward pass."""
+    return ('y = gamma * x_hat + beta, x_hat = (x - mean) / std\n'
+            'dgamma = sum(dy * x_hat), dbeta = sum(dy)\n'
+            'dx_hat = dy * gamma\n'
+            'dx = (dx_hat - mean(dx_hat) - x_hat * mean(dx_hat * x_hat)) / std\n'
+            'the two mean terms appear because mean and std depend on every feature')
 
 # Step 91 - layernorm_backward_implementation (not yet solved)
 # TODO: implement
