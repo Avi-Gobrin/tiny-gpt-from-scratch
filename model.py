@@ -1205,8 +1205,10 @@ def initialize_adam_step_counter():
     """Adam's step counter starts at zero and is bumped before the first update."""
     return 0
 
-# Step 149 - adam_increment_step (not yet solved)
-# TODO: implement
+# Step 149 - adam_increment_step
+def adam_increment_step(t):
+    """Advance the step counter used by bias correction."""
+    return t + 1
 
 # Step 150 - adam_update_first_moment (not yet solved)
 # TODO: implement
