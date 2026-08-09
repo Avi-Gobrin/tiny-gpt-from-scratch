@@ -890,8 +890,11 @@ def choose_attention_head_config(d_model, n_heads):
         raise ValueError("d_model must be divisible by n_heads")
     return {'n_heads': n_heads, 'd_head': d_model // n_heads, 'd_model': d_model}
 
-# Step 117 - create_multihead_qkv_projections (not yet solved)
-# TODO: implement
+# Step 117 - create_multihead_qkv_projections
+def create_multihead_qkv_projections(d_model, n_heads, scale=0.02):
+    """One (d_model, d_model) matrix per projection; heads are carved out by reshape."""
+    choose_attention_head_config(d_model, n_heads)
+    return create_qkv_projections(d_model, d_model, scale)
 
 # Step 118 - create_multihead_output_projection (not yet solved)
 # TODO: implement
