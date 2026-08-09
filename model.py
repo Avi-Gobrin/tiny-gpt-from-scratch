@@ -883,8 +883,12 @@ def qkv_projection_backward(dq, dk, dv, cache):
             'dW_k': matmul(transpose_matrix(x), dk),
             'dW_v': matmul(transpose_matrix(x), dv)}
 
-# Step 116 - choose_attention_head_config (not yet solved)
-# TODO: implement
+# Step 116 - choose_attention_head_config
+def choose_attention_head_config(d_model, n_heads):
+    """Split d_model evenly across the heads."""
+    if d_model % n_heads != 0:
+        raise ValueError("d_model must be divisible by n_heads")
+    return {'n_heads': n_heads, 'd_head': d_model // n_heads, 'd_model': d_model}
 
 # Step 117 - create_multihead_qkv_projections (not yet solved)
 # TODO: implement
