@@ -844,8 +844,11 @@ def apply_output_projection(context, w_o):
     """Project the attention context back into model space."""
     return {'y': matmul(context, w_o), 'cache': {'context': context, 'w_o': w_o}}
 
-# Step 110 - output_projection_backward (not yet solved)
-# TODO: implement
+# Step 110 - output_projection_backward
+def output_projection_backward(dy, cache):
+    """Return {'d_context', 'dw_o'} for context @ W_o."""
+    return {'d_context': matmul(dy, transpose_matrix(cache['w_o'])),
+            'dw_o': matmul(transpose_matrix(cache['context']), dy)}
 
 # Step 111 - attention_value_backward (not yet solved)
 # TODO: implement
