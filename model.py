@@ -793,8 +793,10 @@ def create_qkv_projections(d_model, d_head, scale=0.02):
             'W_k': np.random.randn(d_model, d_head) * scale,
             'W_v': np.random.randn(d_model, d_head) * scale}
 
-# Step 100 - compute_query (not yet solved)
-# TODO: implement
+# Step 100 - compute_query
+def compute_query(x, w_q):
+    """Q = x @ W_q"""
+    return matmul(x, w_q)
 
 # Step 101 - compute_key (not yet solved)
 # TODO: implement
