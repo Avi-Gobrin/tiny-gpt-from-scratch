@@ -818,8 +818,10 @@ def scale_attention_scores(scores, d_head):
     """Divide by sqrt(d_head) so score variance stays about 1 as d_head grows."""
     return scores / np.sqrt(d_head)
 
-# Step 105 - build_causal_mask (not yet solved)
-# TODO: implement
+# Step 105 - build_causal_mask
+def build_causal_mask(seq_len):
+    """Lower-triangular boolean mask: True where a position is allowed to attend."""
+    return np.tril(np.ones((seq_len, seq_len), dtype=bool))
 
 # Step 106 - apply_causal_mask (not yet solved)
 # TODO: implement
