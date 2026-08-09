@@ -667,8 +667,10 @@ def bias_add_forward(x, b):
     """Broadcast-add a (D,) bias to every row of x."""
     return {'y': x + b, 'cache': {'x': x, 'b': b}}
 
-# Step 80 - bias_add_backward_db (not yet solved)
-# TODO: implement
+# Step 80 - bias_add_backward_db
+def bias_add_backward_db(dy, cache=None):
+    """The bias is shared across rows, so its gradient sums over the batch."""
+    return np.sum(dy, axis=0)
 
 # Step 81 - relu_forward (not yet solved)
 # TODO: implement
