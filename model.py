@@ -917,8 +917,10 @@ def get_multihead_n_heads(x):
     """Heads sit on axis 1 once they are transposed to the front."""
     return x.shape[1]
 
-# Step 122 - get_multihead_sequence_length (not yet solved)
-# TODO: implement
+# Step 122 - get_multihead_sequence_length
+def get_multihead_sequence_length(x):
+    """Sequence length sits on axis 2 in (B, H, T, d_head) layout."""
+    return x.shape[2]
 
 # Step 123 - compute_d_head (not yet solved)
 # TODO: implement
