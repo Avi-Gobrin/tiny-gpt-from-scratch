@@ -747,8 +747,10 @@ def layernorm_backward_implementation(dy, cache):
             'dgamma': np.sum(dy * x_hat, axis=axes),
             'dbeta': np.sum(dy, axis=axes)}
 
-# Step 92 - create_token_embedding (not yet solved)
-# TODO: implement
+# Step 92 - create_token_embedding
+def create_token_embedding(vocab_size, d_model, scale=0.02):
+    """One small random vector per token in the vocabulary."""
+    return np.random.randn(vocab_size, d_model) * scale
 
 # Step 93 - token_embedding_forward (not yet solved)
 # TODO: implement
