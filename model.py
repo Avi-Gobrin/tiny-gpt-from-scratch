@@ -652,8 +652,10 @@ def derive_linear_dw_on_paper():
             'dL/dW = X.T @ dY\n'
             'shapes: X (B, In), dY (B, Out) -> dL/dW (In, Out)')
 
-# Step 77 - linear_backward_dx (not yet solved)
-# TODO: implement
+# Step 77 - linear_backward_dx
+def linear_backward_dx(dy, cache):
+    """Gradient w.r.t. the linear layer input: dY @ W.T."""
+    return matmul(dy, transpose_matrix(cache['w']))
 
 # Step 78 - linear_backward_dw (not yet solved)
 # TODO: implement
