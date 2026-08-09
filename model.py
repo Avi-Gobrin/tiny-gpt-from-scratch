@@ -1143,8 +1143,22 @@ def lm_head_linear_forward(x, w_lm, b_lm):
     return {'y': bias_add_forward(linear_forward(x, w_lm)['y'], b_lm)['y'],
             'cache': {'x': x, 'w': w_lm}}
 
-# Step 145 - full_model_forward (not yet solved)
-# TODO: implement
+# Step 145 - full_model_forward
+def full_model_forward(params, ids, eps=1e-5):
+    """Run token ids (B, T) through the whole GPT and return logits plus caches."""
+    ids = np.asarray(ids)
+    tok = token_embedding_forward(params['tok_emb'], ids)
+    pos = slice_positional_embedding(params['pos_emb'], ids.shape[-1])
+    emb = add_token_and_positional_embeddings(tok['y'], pos)
+    blocks = forward_through_all_blocks(emb['y'], params['blocks'])
+    norm = final_layernorm_forward(blocks['y'], params['ln_f']['gamma'],
+                                   params['ln_f']['beta'], eps)
+    head = lm_head_linear_forward(norm['y'], params['lm_head']['w_lm'],
+                                  params['lm_head']['b_lm'])
+    return {'logits': head['y'],
+            'cache': {'logits': head['y'], 'tok': tok['cache'], 'blocks': blocks['cache'],
+                      'norm': norm['cache'], 'head': head['cache'],
+                      'seq_len': ids.shape[-1]}}
 
 # Step 146 - full_model_backward (not yet solved)
 # TODO: implement
