@@ -1054,8 +1054,20 @@ def residual_backward(dy, cache=None):
     """Addition sends the same gradient down both branches."""
     return {'dx': dy, 'd_sublayer': dy}
 
-# Step 137 - pre_layernorm_sublayer_forward (not yet solved)
-# TODO: implement
+# Step 137 - pre_layernorm_sublayer_forward
+def pre_layernorm_sublayer_forward(x, gamma, beta, sublayer_fn, eps=1e-5):
+    """Pre-LN wrapper: x + sublayer(LayerNorm(x))."""
+    norm = layernorm_forward(x, gamma, beta, eps)
+    sub = sublayer_fn(norm['y'])
+    return {'y': residual_forward(x, sub['y'])['y'],
+            'cache': {'norm': norm['cache'], 'sub': sub['cache']}}
+
+def pre_layernorm_sublayer_backward(dy, cache, sublayer_backward):
+    "reverse of pre_layernorm_sublayer_forward"
+    split = residual_backward(dy)
+    sub = sublayer_backward(split['d_sublayer'], cache['sub'])
+    norm = layernorm_backward_implementation(sub['dx'], cache['norm'])
+    return {'dx': split['dx'] + norm['dx'], 'sub': sub, 'norm': norm}
 
 # Step 138 - transformer_block_forward (not yet solved)
 # TODO: implement
