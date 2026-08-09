@@ -1286,8 +1286,10 @@ def logging_and_validation_loss(params, val_ids, block_size, batch_size, n_eval_
         total += batch_cross_entropy(full_model_forward(params, x)['logits'], y)
     return total / n_eval_batches
 
-# Step 156 - encode_prompt (not yet solved)
-# TODO: implement
+# Step 156 - encode_prompt
+def encode_prompt(prompt, stoi):
+    """Turn a prompt string into a 1D array of token ids."""
+    return np.array(encode_string(prompt, stoi), dtype=np.int64)
 
 # Step 157 - crop_context_to_block_size (not yet solved)
 # TODO: implement
