@@ -1032,8 +1032,17 @@ def ffn_forward(x, ffn):
     return {'y': ffn_linear_two_forward(a, ffn['w2'], ffn['b2']),
             'cache': {'x': x, 'h': h, 'a': a, 'ffn': ffn}}
 
-# Step 134 - ffn_backward (not yet solved)
-# TODO: implement
+# Step 134 - ffn_backward
+def ffn_backward(dy, cache):
+    """Return {'dx', 'dw1', 'db1', 'dw2', 'db2'} for the two-layer ReLU network."""
+    ffn = cache['ffn']
+    da = linear_backward_dx(dy, {'w': ffn['w2']})
+    dh = relu_backward(da, {'x': cache['h']})
+    return {'dx': linear_backward_dx(dh, {'w': ffn['w1']}),
+            'dw1': linear_backward_dw(flatten_tokens(dh), {'x': flatten_tokens(cache['x'])}),
+            'db1': bias_add_backward_db(flatten_tokens(dh)),
+            'dw2': linear_backward_dw(flatten_tokens(dy), {'x': flatten_tokens(cache['a'])}),
+            'db2': bias_add_backward_db(flatten_tokens(dy))}
 
 # Step 135 - residual_forward (not yet solved)
 # TODO: implement
