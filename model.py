@@ -828,8 +828,11 @@ def apply_causal_mask(scores, mask):
     """Send future positions to -inf so softmax gives them exactly zero weight."""
     return np.where(mask, scores, -np.inf)
 
-# Step 107 - softmax_attention_weights (not yet solved)
-# TODO: implement
+# Step 107 - softmax_attention_weights
+def softmax_attention_weights(scores):
+    """Stable softmax over the last axis, for 2D or 4D score tensors."""
+    e = array_exp(scores - np.max(scores, axis=-1, keepdims=True))
+    return e / np.sum(e, axis=-1, keepdims=True)
 
 # Step 108 - attention_weighted_values (not yet solved)
 # TODO: implement
