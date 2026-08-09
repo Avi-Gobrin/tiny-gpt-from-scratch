@@ -735,8 +735,17 @@ def layernorm_backward_full():
             'dx = (dx_hat - mean(dx_hat) - x_hat * mean(dx_hat * x_hat)) / std\n'
             'the two mean terms appear because mean and std depend on every feature')
 
-# Step 91 - layernorm_backward_implementation (not yet solved)
-# TODO: implement
+# Step 91 - layernorm_backward_implementation
+def layernorm_backward_implementation(dy, cache):
+    """Return {'dx', 'dgamma', 'dbeta'} for LayerNorm."""
+    x_hat, std = cache['x_hat'], cache['std']
+    axes = tuple(range(dy.ndim - 1))
+    dx_hat = dy * cache['gamma']
+    dx = layernorm_backward_divide_std(
+        layernorm_backward_subtract_mean(dx_hat), x_hat, std)
+    return {'dx': dx,
+            'dgamma': np.sum(dy * x_hat, axis=axes),
+            'dbeta': np.sum(dy, axis=axes)}
 
 # Step 92 - create_token_embedding (not yet solved)
 # TODO: implement
