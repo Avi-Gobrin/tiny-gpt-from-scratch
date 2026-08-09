@@ -693,8 +693,10 @@ def layernorm_forward_mean(x):
     """Per-row mean over the feature axis, kept as size 1 for broadcasting."""
     return np.mean(x, axis=-1, keepdims=True)
 
-# Step 85 - layernorm_forward_variance (not yet solved)
-# TODO: implement
+# Step 85 - layernorm_forward_variance
+def layernorm_forward_variance(x):
+    """Per-row variance over the feature axis, kept as size 1."""
+    return np.mean((x - layernorm_forward_mean(x)) ** 2, axis=-1, keepdims=True)
 
 # Step 86 - layernorm_forward_normalize (not yet solved)
 # TODO: implement
