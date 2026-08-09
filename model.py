@@ -907,8 +907,10 @@ def reshape_to_heads(x, n_heads):
     b, t, d = x.shape
     return x.reshape(b, t, n_heads, d // n_heads)
 
-# Step 120 - transpose_heads_to_front (not yet solved)
-# TODO: implement
+# Step 120 - transpose_heads_to_front
+def transpose_heads_to_front(x):
+    """(B, T, H, d_head) -> (B, H, T, d_head) so each head is its own matrix."""
+    return np.transpose(x, (0, 2, 1, 3))
 
 # Step 121 - get_multihead_n_heads (not yet solved)
 # TODO: implement
