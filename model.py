@@ -872,8 +872,16 @@ def qk_scores_backward(d_scores, q, k):
     return {'dq': np.matmul(d_scores, k),
             'dk': np.matmul(np.swapaxes(d_scores, -1, -2), q)}
 
-# Step 115 - qkv_projection_backward (not yet solved)
-# TODO: implement
+# Step 115 - qkv_projection_backward
+def qkv_projection_backward(dq, dk, dv, cache):
+    """x feeds all three projections, so dx sums the three paths."""
+    x = cache['x']
+    return {'dx': (matmul(dq, transpose_matrix(cache['W_q']))
+                   + matmul(dk, transpose_matrix(cache['W_k']))
+                   + matmul(dv, transpose_matrix(cache['W_v']))),
+            'dW_q': matmul(transpose_matrix(x), dq),
+            'dW_k': matmul(transpose_matrix(x), dk),
+            'dW_v': matmul(transpose_matrix(x), dv)}
 
 # Step 116 - choose_attention_head_config (not yet solved)
 # TODO: implement
