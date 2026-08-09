@@ -716,8 +716,10 @@ def layernorm_forward(x, gamma, beta, eps=1e-5):
     return {'y': layernorm_forward_affine(x_hat, gamma, beta),
             'cache': {'x_hat': x_hat, 'std': np.sqrt(var + eps), 'gamma': gamma}}
 
-# Step 88 - layernorm_backward_subtract_mean (not yet solved)
-# TODO: implement
+# Step 88 - layernorm_backward_subtract_mean
+def layernorm_backward_subtract_mean(dy):
+    """Backward of the centering step x - mean(x)."""
+    return dy - np.mean(dy, axis=-1, keepdims=True)
 
 # Step 89 - layernorm_backward_divide_std (not yet solved)
 # TODO: implement
