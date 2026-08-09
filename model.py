@@ -861,8 +861,10 @@ def masked_softmax_backward(d_weights, weights):
     """Softmax Jacobian; masked slots have weight 0 and stay 0."""
     return weights * (d_weights - np.sum(d_weights * weights, axis=-1, keepdims=True))
 
-# Step 113 - scale_scores_backward (not yet solved)
-# TODO: implement
+# Step 113 - scale_scores_backward
+def scale_scores_backward(d_scores, d_head):
+    """Dividing the scores by sqrt(d_head) divides their gradient too."""
+    return d_scores / np.sqrt(d_head)
 
 # Step 114 - qk_scores_backward (not yet solved)
 # TODO: implement
