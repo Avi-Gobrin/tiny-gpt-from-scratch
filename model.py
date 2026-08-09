@@ -896,8 +896,10 @@ def create_multihead_qkv_projections(d_model, n_heads, scale=0.02):
     choose_attention_head_config(d_model, n_heads)
     return create_qkv_projections(d_model, d_model, scale)
 
-# Step 118 - create_multihead_output_projection (not yet solved)
-# TODO: implement
+# Step 118 - create_multihead_output_projection
+def create_multihead_output_projection(d_model, scale=0.02):
+    """Projection applied after the heads are merged back together."""
+    return np.random.randn(d_model, d_model) * scale
 
 # Step 119 - reshape_to_heads (not yet solved)
 # TODO: implement
