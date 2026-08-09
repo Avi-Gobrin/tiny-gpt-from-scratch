@@ -682,8 +682,11 @@ def relu_backward(dy, cache):
     """Gradient flows only where the input was positive."""
     return dy * (cache['x'] > 0)
 
-# Step 83 - softmax_cross_entropy_backward (not yet solved)
-# TODO: implement
+# Step 83 - softmax_cross_entropy_backward
+def softmax_cross_entropy_backward(probs, targets):
+    """dL/dlogits for mean cross-entropy: (probs - onehot(targets)) / B."""
+    onehot = one_hot_encode_batch(targets, probs.shape[1])
+    return (probs - onehot) / len(targets)
 
 # Step 84 - layernorm_forward_mean (not yet solved)
 # TODO: implement
