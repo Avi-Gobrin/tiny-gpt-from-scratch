@@ -1322,8 +1322,10 @@ def top_k_filter(logits, k):
     kth = np.partition(logits, -k, axis=-1)[..., -k][..., None]
     return np.where(logits >= kth, logits, -np.inf)
 
-# Step 162 - softmax_to_probs (not yet solved)
-# TODO: implement
+# Step 162 - softmax_to_probs
+def softmax_to_probs(logits):
+    """Turn next-token logits into a probability distribution."""
+    return stable_softmax_1d(np.asarray(logits).reshape(-1))
 
 # Step 163 - sample_one_token (not yet solved)
 # TODO: implement
