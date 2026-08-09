@@ -688,8 +688,10 @@ def softmax_cross_entropy_backward(probs, targets):
     onehot = one_hot_encode_batch(targets, probs.shape[1])
     return (probs - onehot) / len(targets)
 
-# Step 84 - layernorm_forward_mean (not yet solved)
-# TODO: implement
+# Step 84 - layernorm_forward_mean
+def layernorm_forward_mean(x):
+    """Per-row mean over the feature axis, kept as size 1 for broadcasting."""
+    return np.mean(x, axis=-1, keepdims=True)
 
 # Step 85 - layernorm_forward_variance (not yet solved)
 # TODO: implement
