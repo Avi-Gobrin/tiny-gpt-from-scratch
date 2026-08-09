@@ -1020,8 +1020,17 @@ def ffn_activation_forward(h):
     """ReLU between the two feed-forward projections."""
     return relu_forward(h)['y']
 
-# Step 133 - ffn_linear_two_forward (not yet solved)
-# TODO: implement
+# Step 133 - ffn_linear_two_forward
+def ffn_linear_two_forward(a, w2, b2):
+    """Project back down from d_ff to d_model."""
+    return bias_add_forward(linear_forward(a, w2)['y'], b2)['y']
+
+def ffn_forward(x, ffn):
+    "the whole feed-forward network, with one cache for the backward pass"
+    h = ffn_linear_one_forward(x, ffn['w1'], ffn['b1'])
+    a = ffn_activation_forward(h)
+    return {'y': ffn_linear_two_forward(a, ffn['w2'], ffn['b2']),
+            'cache': {'x': x, 'h': h, 'a': a, 'ffn': ffn}}
 
 # Step 134 - ffn_backward (not yet solved)
 # TODO: implement
