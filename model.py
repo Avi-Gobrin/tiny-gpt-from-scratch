@@ -1210,8 +1210,10 @@ def adam_increment_step(t):
     """Advance the step counter used by bias correction."""
     return t + 1
 
-# Step 150 - adam_update_first_moment (not yet solved)
-# TODO: implement
+# Step 150 - adam_update_first_moment
+def adam_update_first_moment(m, grad, beta1=0.9):
+    """Running average of the gradient."""
+    return beta1 * m + (1 - beta1) * grad
 
 # Step 151 - adam_update_second_moment (not yet solved)
 # TODO: implement
