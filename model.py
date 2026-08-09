@@ -766,8 +766,10 @@ def token_embedding_backward(dy, cache):
     np.add.at(d_emb, ids, rows)
     return d_emb
 
-# Step 95 - create_positional_embedding (not yet solved)
-# TODO: implement
+# Step 95 - create_positional_embedding
+def create_positional_embedding(block_size, d_model, scale=0.02):
+    """One small random vector per position in the context window."""
+    return np.random.randn(block_size, d_model) * scale
 
 # Step 96 - slice_positional_embedding (not yet solved)
 # TODO: implement
