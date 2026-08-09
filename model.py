@@ -1132,8 +1132,10 @@ def backward_through_all_blocks(dy, caches):
         grads[i] = out['grads']
     return {'dx': dy, 'grads': grads}
 
-# Step 143 - final_layernorm_forward (not yet solved)
-# TODO: implement
+# Step 143 - final_layernorm_forward
+def final_layernorm_forward(x, gamma, beta, eps=1e-5):
+    """LayerNorm applied once after the last block, before the output head."""
+    return layernorm_forward(x, gamma, beta, eps)
 
 # Step 144 - lm_head_linear_forward (not yet solved)
 # TODO: implement
