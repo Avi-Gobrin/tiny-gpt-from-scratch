@@ -1122,8 +1122,15 @@ def forward_through_all_blocks(x, blocks):
         caches.append(out['cache'])
     return {'y': x, 'cache': caches}
 
-# Step 142 - backward_through_all_blocks (not yet solved)
-# TODO: implement
+# Step 142 - backward_through_all_blocks
+def backward_through_all_blocks(dy, caches):
+    """Walk the blocks in reverse, threading the gradient backwards."""
+    grads = [None] * len(caches)
+    for i in reversed(range(len(caches))):
+        out = transformer_block_backward(dy, caches[i])
+        dy = out['dx']
+        grads[i] = out['grads']
+    return {'dx': dy, 'grads': grads}
 
 # Step 143 - final_layernorm_forward (not yet solved)
 # TODO: implement
