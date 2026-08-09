@@ -850,8 +850,11 @@ def output_projection_backward(dy, cache):
     return {'d_context': matmul(dy, transpose_matrix(cache['w_o'])),
             'dw_o': matmul(transpose_matrix(cache['context']), dy)}
 
-# Step 111 - attention_value_backward (not yet solved)
-# TODO: implement
+# Step 111 - attention_value_backward
+def attention_value_backward(d_context, weights, v):
+    """Return {'d_weights', 'd_v'} for context = weights @ V."""
+    return {'d_weights': np.matmul(d_context, np.swapaxes(v, -1, -2)),
+            'd_v': np.matmul(np.swapaxes(weights, -1, -2), d_context)}
 
 # Step 112 - masked_softmax_backward (not yet solved)
 # TODO: implement
