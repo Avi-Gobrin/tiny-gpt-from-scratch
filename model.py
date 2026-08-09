@@ -1296,8 +1296,13 @@ def crop_context_to_block_size(ids, block_size):
     """Keep only the most recent block_size tokens; the model sees no further back."""
     return np.asarray(ids)[-block_size:]
 
-# Step 158 - forward_to_get_logits (not yet solved)
-# TODO: implement
+# Step 158 - forward_to_get_logits
+def forward_to_get_logits(params, ids):
+    """Run one sequence through the model, adding the batch axis if needed."""
+    ids = np.asarray(ids)
+    if ids.ndim == 1:
+        ids = ids[None, :]
+    return full_model_forward(params, ids)['logits']
 
 # Step 159 - take_last_position_logits (not yet solved)
 # TODO: implement
