@@ -1015,8 +1015,10 @@ def ffn_linear_one_forward(x, w1, b1):
     """Expand from d_model up to d_ff."""
     return bias_add_forward(linear_forward(x, w1)['y'], b1)['y']
 
-# Step 132 - ffn_activation_forward (not yet solved)
-# TODO: implement
+# Step 132 - ffn_activation_forward
+def ffn_activation_forward(h):
+    """ReLU between the two feed-forward projections."""
+    return relu_forward(h)['y']
 
 # Step 133 - ffn_linear_two_forward (not yet solved)
 # TODO: implement
