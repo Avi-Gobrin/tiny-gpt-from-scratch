@@ -5,9 +5,9 @@ Run this with: python scaffold.py
 Uses functions defined in model.py.
 """
 
-from model import *  # noqa: F401, F403 (pulls in your solution functions)
-
 import numpy as np
+
+from model import *  # noqa: F401, F403 (pulls in your solution functions)
 
 
 TOY_CORPUS = (
@@ -59,7 +59,7 @@ if __name__ == "__main__":
         params, train_ids, block_size,
         batch_size=16, learning_rate=3e-3, num_steps=200, log_every=20,
     )
-    print("loss_history:", result["loss_history"])
+    print("loss_history:", [round(float(x), 3) for x in result["loss_history"]])
 
     val_loss = logging_and_validation_loss(result["params"], val_ids, block_size, 4, 2)
     print(f"val_loss ~ {val_loss:.4f}")
