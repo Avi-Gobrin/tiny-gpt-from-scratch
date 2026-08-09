@@ -602,8 +602,13 @@ def sgd_update_w(w, dw, learning_rate):
     # TODO: subtract the scaled gradient from the weights and return the new matrix
     return w - learning_rate * dw
 
-# Step 71 - run_one_training_step (not yet solved)
-# TODO: implement
+# Step 71 - run_one_training_step
+def run_one_training_step(w, ids, targets, learning_rate):
+    """Run one forward/backward/SGD step and return {'w', 'loss'}."""
+    probs = logits_to_probs_rowwise(forward_logits_lookup(w, ids))
+    loss = cross_entropy_loss(probs, targets)
+    dw = compute_dw_scatter_add(ids, compute_dlogits(probs, targets), w.shape[0])
+    return {'w': sgd_update_w(w, dw, learning_rate), 'loss': loss}
 
 # Step 72 - train_neural_bigram_loop (not yet solved)
 # TODO: implement
