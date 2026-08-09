@@ -1276,8 +1276,15 @@ def wire_full_training_loop(params, data, block_size, batch_size, learning_rate,
             loss_history.append(batch_cross_entropy(out['logits'], y))
     return {'params': params, 'loss_history': loss_history}
 
-# Step 155 - logging_and_validation_loss (not yet solved)
-# TODO: implement
+# Step 155 - logging_and_validation_loss
+def logging_and_validation_loss(params, val_ids, block_size, batch_size, n_eval_batches):
+    """Average cross-entropy over held-out batches, forward pass only."""
+    rng = np.random.default_rng(0)
+    total = 0.0
+    for _ in range(n_eval_batches):
+        x, y = get_batch(val_ids, block_size, batch_size, rng)
+        total += batch_cross_entropy(full_model_forward(params, x)['logits'], y)
+    return total / n_eval_batches
 
 # Step 156 - encode_prompt (not yet solved)
 # TODO: implement
