@@ -1080,8 +1080,20 @@ def transformer_block_forward(x, block, eps=1e-5):
         lambda h: ffn_forward(h, block['ffn']), eps)
     return {'y': ffn['y'], 'cache': {'attn': attn['cache'], 'ffn': ffn['cache']}}
 
-# Step 139 - transformer_block_backward (not yet solved)
-# TODO: implement
+# Step 139 - transformer_block_backward
+def transformer_block_backward(dy, cache):
+    """Return {'dx', 'grads'} with grads laid out like the block's parameters."""
+    ffn = pre_layernorm_sublayer_backward(dy, cache['ffn'], ffn_backward)
+    attn = pre_layernorm_sublayer_backward(
+        ffn['dx'], cache['attn'], multihead_attention_backward)
+    return {'dx': attn['dx'],
+            'grads': {
+                'ln1': {'gamma': attn['norm']['dgamma'], 'beta': attn['norm']['dbeta']},
+                'ln2': {'gamma': ffn['norm']['dgamma'], 'beta': ffn['norm']['dbeta']},
+                'attn': {'W_q': attn['sub']['dW_q'], 'W_k': attn['sub']['dW_k'],
+                         'W_v': attn['sub']['dW_v'], 'W_o': attn['sub']['dW_o']},
+                'ffn': {'w1': ffn['sub']['dw1'], 'b1': ffn['sub']['db1'],
+                        'w2': ffn['sub']['dw2'], 'b2': ffn['sub']['db2']}}}
 
 # Step 140 - stack_transformer_blocks (not yet solved)
 # TODO: implement
