@@ -803,8 +803,10 @@ def compute_key(x, w_k):
     """K = x @ W_k"""
     return matmul(x, w_k)
 
-# Step 102 - compute_value (not yet solved)
-# TODO: implement
+# Step 102 - compute_value
+def compute_value(x, w_v):
+    """V = x @ W_v"""
+    return matmul(x, w_v)
 
 # Step 103 - compute_attention_scores (not yet solved)
 # TODO: implement
