@@ -1291,8 +1291,10 @@ def encode_prompt(prompt, stoi):
     """Turn a prompt string into a 1D array of token ids."""
     return np.array(encode_string(prompt, stoi), dtype=np.int64)
 
-# Step 157 - crop_context_to_block_size (not yet solved)
-# TODO: implement
+# Step 157 - crop_context_to_block_size
+def crop_context_to_block_size(ids, block_size):
+    """Keep only the most recent block_size tokens; the model sees no further back."""
+    return np.asarray(ids)[-block_size:]
 
 # Step 158 - forward_to_get_logits (not yet solved)
 # TODO: implement
