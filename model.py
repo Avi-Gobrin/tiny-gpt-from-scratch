@@ -798,8 +798,10 @@ def compute_query(x, w_q):
     """Q = x @ W_q"""
     return matmul(x, w_q)
 
-# Step 101 - compute_key (not yet solved)
-# TODO: implement
+# Step 101 - compute_key
+def compute_key(x, w_k):
+    """K = x @ W_k"""
+    return matmul(x, w_k)
 
 # Step 102 - compute_value (not yet solved)
 # TODO: implement
