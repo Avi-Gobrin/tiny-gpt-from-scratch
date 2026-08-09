@@ -657,8 +657,10 @@ def linear_backward_dx(dy, cache):
     """Gradient w.r.t. the linear layer input: dY @ W.T."""
     return matmul(dy, transpose_matrix(cache['w']))
 
-# Step 78 - linear_backward_dw (not yet solved)
-# TODO: implement
+# Step 78 - linear_backward_dw
+def linear_backward_dw(dy, cache):
+    """Gradient w.r.t. the linear layer weights: X.T @ dY."""
+    return matmul(transpose_matrix(cache['x']), dy)
 
 # Step 79 - bias_add_forward (not yet solved)
 # TODO: implement
