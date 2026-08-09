@@ -1309,8 +1309,10 @@ def take_last_position_logits(logits):
     """Only the final position predicts the next token."""
     return logits[..., -1, :]
 
-# Step 160 - apply_temperature (not yet solved)
-# TODO: implement
+# Step 160 - apply_temperature
+def apply_temperature(logits, temperature):
+    """Below 1 sharpens the distribution, above 1 flattens it."""
+    return logits / temperature
 
 # Step 161 - top_k_filter (not yet solved)
 # TODO: implement
