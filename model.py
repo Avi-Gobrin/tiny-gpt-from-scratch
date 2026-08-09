@@ -944,8 +944,10 @@ def transpose_heads_to_back(x):
     """(B, H, T, d_head) -> (B, T, H, d_head), the inverse of transpose_heads_to_front."""
     return np.transpose(x, (0, 2, 1, 3))
 
-# Step 127 - get_multihead_output_sequence_length (not yet solved)
-# TODO: implement
+# Step 127 - get_multihead_output_sequence_length
+def get_multihead_output_sequence_length(x):
+    """After transposing back, sequence length is on axis 1 again."""
+    return x.shape[1]
 
 # Step 128 - merge_heads_to_d_model (not yet solved)
 # TODO: implement
