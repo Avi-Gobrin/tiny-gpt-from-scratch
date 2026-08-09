@@ -721,8 +721,10 @@ def layernorm_backward_subtract_mean(dy):
     """Backward of the centering step x - mean(x)."""
     return dy - np.mean(dy, axis=-1, keepdims=True)
 
-# Step 89 - layernorm_backward_divide_std (not yet solved)
-# TODO: implement
+# Step 89 - layernorm_backward_divide_std
+def layernorm_backward_divide_std(dy, x_hat, std):
+    """Backward of x_hat = centered / std, where std also depends on x."""
+    return (dy - x_hat * np.mean(dy * x_hat, axis=-1, keepdims=True)) / std
 
 # Step 90 - layernorm_backward_full (not yet solved)
 # TODO: implement
