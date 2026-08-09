@@ -912,8 +912,10 @@ def transpose_heads_to_front(x):
     """(B, T, H, d_head) -> (B, H, T, d_head) so each head is its own matrix."""
     return np.transpose(x, (0, 2, 1, 3))
 
-# Step 121 - get_multihead_n_heads (not yet solved)
-# TODO: implement
+# Step 121 - get_multihead_n_heads
+def get_multihead_n_heads(x):
+    """Heads sit on axis 1 once they are transposed to the front."""
+    return x.shape[1]
 
 # Step 122 - get_multihead_sequence_length (not yet solved)
 # TODO: implement
