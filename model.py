@@ -1334,8 +1334,10 @@ def sample_one_token(probs, rng=None):
         return int(np.random.choice(len(probs), p=probs))
     return int(rng.choice(len(probs), p=probs))
 
-# Step 164 - append_token_to_sequence (not yet solved)
-# TODO: implement
+# Step 164 - append_token_to_sequence
+def append_token_to_sequence(ids, token_id):
+    """Grow the running sequence by one token."""
+    return np.append(np.asarray(ids), np.int64(token_id))
 
 # Step 165 - generation_loop_for_n_steps (not yet solved)
 # TODO: implement
