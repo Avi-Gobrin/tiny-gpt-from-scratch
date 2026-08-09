@@ -901,8 +901,11 @@ def create_multihead_output_projection(d_model, scale=0.02):
     """Projection applied after the heads are merged back together."""
     return np.random.randn(d_model, d_model) * scale
 
-# Step 119 - reshape_to_heads (not yet solved)
-# TODO: implement
+# Step 119 - reshape_to_heads
+def reshape_to_heads(x, n_heads):
+    """(B, T, D) -> (B, T, H, D // H)"""
+    b, t, d = x.shape
+    return x.reshape(b, t, n_heads, d // n_heads)
 
 # Step 120 - transpose_heads_to_front (not yet solved)
 # TODO: implement
