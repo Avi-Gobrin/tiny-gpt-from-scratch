@@ -1200,8 +1200,10 @@ def initialize_adam_moments(params):
     """Zero-filled first and second moment trees shaped like params."""
     return {'m': zeros_like_tree(params), 'v': zeros_like_tree(params)}
 
-# Step 148 - initialize_adam_step_counter (not yet solved)
-# TODO: implement
+# Step 148 - initialize_adam_step_counter
+def initialize_adam_step_counter():
+    """Adam's step counter starts at zero and is bumped before the first update."""
+    return 0
 
 # Step 149 - adam_increment_step (not yet solved)
 # TODO: implement
