@@ -1137,8 +1137,11 @@ def final_layernorm_forward(x, gamma, beta, eps=1e-5):
     """LayerNorm applied once after the last block, before the output head."""
     return layernorm_forward(x, gamma, beta, eps)
 
-# Step 144 - lm_head_linear_forward (not yet solved)
-# TODO: implement
+# Step 144 - lm_head_linear_forward
+def lm_head_linear_forward(x, w_lm, b_lm):
+    """Project hidden states to one logit per vocabulary entry."""
+    return {'y': bias_add_forward(linear_forward(x, w_lm)['y'], b_lm)['y'],
+            'cache': {'x': x, 'w': w_lm}}
 
 # Step 145 - full_model_forward (not yet solved)
 # TODO: implement
