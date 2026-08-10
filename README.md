@@ -80,11 +80,11 @@ python scaffold.py
 - [x] **68.** derive_dw_on_paper
 - [x] **69.** compute_dw_scatter_add
 - [x] **70.** sgd_update_w
-- [ ] **71.** run_one_training_step
-- [ ] **72.** train_neural_bigram_loop
-- [ ] **73.** sample_from_neural_bigram
-- [ ] **74.** linear_forward
-- [ ] **75.** derive_dx_on_paper
+- [x] **71.** run_one_training_step
+- [x] **72.** train_neural_bigram_loop
+- [x] **73.** sample_from_neural_bigram
+- [x] **74.** linear_forward
+- [x] **75.** derive_dx_on_paper
 - [ ] **76.** derive_linear_dw_on_paper
 - [ ] **77.** linear_backward_dx
 - [ ] **78.** linear_backward_dw
