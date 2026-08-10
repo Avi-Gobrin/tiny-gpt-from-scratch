@@ -602,20 +602,53 @@ def sgd_update_w(w, dw, learning_rate):
     # TODO: subtract the scaled gradient from the weights and return the new matrix
     return w - learning_rate * dw
 
-# Step 71 - run_one_training_step (not yet solved)
-# TODO: implement
+# Step 71 - run_one_training_step
+def run_one_training_step(w, ids, targets, learning_rate):
+    """Run forward, loss, backward, and SGD update once. Return {'w': new_w, 'loss': float}."""
+    # TODO: chain the upstream forward/loss/backward/update helpers into one step
+    logits = forward_logits_lookup(w, ids)
+    probs = logits_to_probs_rowwise(logits)
+    loss = cross_entropy_loss(probs, targets)
+    dlogits = compute_dlogits(probs, targets)
+    dw = compute_dw_scatter_add(ids, dlogits, w.shape[0])
+    w_new = sgd_update_w(w, dw, learning_rate)
+    return {'w': w_new, 'loss': loss}
 
-# Step 72 - train_neural_bigram_loop (not yet solved)
-# TODO: implement
+# Step 72 - train_neural_bigram_loop
+def train_neural_bigram_loop(w, data, block_size, batch_size, learning_rate, num_steps, log_every):
+    """Run the neural bigram training loop and return {'w', 'loss_history'}."""
+    # TODO: repeatedly sample a batch, run one training step, and log loss every log_every steps
+    rng = np.random.default_rng(0)
+    loss_history = []
+    for step in range(num_steps):
+        xb, yb = get_batch(data, block_size, batch_size, rng)
+        result = run_one_training_step(w, xb.reshape(-1), yb.reshape(-1), learning_rate)
+        w = result['w']
+        if step % log_every == 0:
+            loss_history.append(result['loss'])
+    return {'w': w, 'loss_history': loss_history}
 
-# Step 73 - sample_from_neural_bigram (not yet solved)
-# TODO: implement
+# Step 73 - sample_from_neural_bigram
+def sample_from_neural_bigram(w, start_id, num_tokens, itos):
+    """Generate a string by repeatedly sampling from softmax of W[id]."""
+    # TODO: starting from start_id, sample num_tokens new ids and decode the full sequence...
+    ids = [int(start_id)]
+    for _ in range(num_tokens):
+        probs = stable_softmax_1d(w[ids[-1]])
+        ids.append(int(np.random.choice(len(probs), p=probs)))
+    return decode_ids(ids, itos)
 
-# Step 74 - linear_forward (not yet solved)
-# TODO: implement
+# Step 74 - linear_forward
+def linear_forward(x, w):
+    # TODO: compute Y = X @ W and return {'y': Y, 'cache': {'x': x, 'w': w}}.
+    return {'y': matmul(x, w), 'cache': {'x': x, 'w': w}}
 
-# Step 75 - derive_dx_on_paper (not yet solved)
-# TODO: implement
+# Step 75 - derive_dx_on_paper
+def derive_dx_on_paper():
+    """Return notes deriving dL/dX = dY @ W.T for Y = X @ W."""
+    return ('Y = X @ W\n'
+            'dL/dX = dY @ W.T\n'
+            'shapes: X (B, In), W (In, Out), dY (B, Out) -> dL/dX (B, In)')
 
 # Step 76 - derive_linear_dw_on_paper (not yet solved)
 # TODO: implement
