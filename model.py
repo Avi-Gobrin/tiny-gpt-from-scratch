@@ -604,25 +604,21 @@ def sgd_update_w(w, dw, learning_rate):
 
 # Step 71 - run_one_training_step
 def run_one_training_step(w, ids, targets, learning_rate):
-    """Run forward, loss, backward, and SGD update once. Return {'w': new_w, 'loss': float}."""
-    # TODO: chain the upstream forward/loss/backward/update helpers into one step
-    logits = forward_logits_lookup(w, ids)
-    probs = logits_to_probs_rowwise(logits)
+    """Run one forward/backward/SGD step and return {'w', 'loss'}."""
+    probs = logits_to_probs_rowwise(forward_logits_lookup(w, ids))
     loss = cross_entropy_loss(probs, targets)
-    dlogits = compute_dlogits(probs, targets)
-    dw = compute_dw_scatter_add(ids, dlogits, w.shape[0])
-    w_new = sgd_update_w(w, dw, learning_rate)
-    return {'w': w_new, 'loss': loss}
+    dw = compute_dw_scatter_add(ids, compute_dlogits(probs, targets), w.shape[0])
+    return {'w': sgd_update_w(w, dw, learning_rate), 'loss': loss}
 
 # Step 72 - train_neural_bigram_loop
-def train_neural_bigram_loop(w, data, block_size, batch_size, learning_rate, num_steps, log_every):
-    """Run the neural bigram training loop and return {'w', 'loss_history'}."""
-    # TODO: repeatedly sample a batch, run one training step, and log loss every log_every steps
+def train_neural_bigram_loop(w, data, block_size, batch_size, learning_rate,
+                             num_steps, log_every):
+    """Train the neural bigram by SGD and return {'w', 'loss_history'}."""
     rng = np.random.default_rng(0)
     loss_history = []
     for step in range(num_steps):
-        xb, yb = get_batch(data, block_size, batch_size, rng)
-        result = run_one_training_step(w, xb.reshape(-1), yb.reshape(-1), learning_rate)
+        x, y = get_batch(data, block_size, batch_size, rng)
+        result = run_one_training_step(w, x.reshape(-1), y.reshape(-1), learning_rate)
         w = result['w']
         if step % log_every == 0:
             loss_history.append(result['loss'])
@@ -630,8 +626,7 @@ def train_neural_bigram_loop(w, data, block_size, batch_size, learning_rate, num
 
 # Step 73 - sample_from_neural_bigram
 def sample_from_neural_bigram(w, start_id, num_tokens, itos):
-    """Generate a string by repeatedly sampling from softmax of W[id]."""
-    # TODO: starting from start_id, sample num_tokens new ids and decode the full sequence...
+    """Generate text by repeatedly sampling from softmax of W[current_id]."""
     ids = [int(start_id)]
     for _ in range(num_tokens):
         probs = stable_softmax_1d(w[ids[-1]])
@@ -640,7 +635,7 @@ def sample_from_neural_bigram(w, start_id, num_tokens, itos):
 
 # Step 74 - linear_forward
 def linear_forward(x, w):
-    # TODO: compute Y = X @ W and return {'y': Y, 'cache': {'x': x, 'w': w}}.
+    """Return {'y': X @ W, 'cache': ...} for the linear layer."""
     return {'y': matmul(x, w), 'cache': {'x': x, 'w': w}}
 
 # Step 75 - derive_dx_on_paper
@@ -650,276 +645,713 @@ def derive_dx_on_paper():
             'dL/dX = dY @ W.T\n'
             'shapes: X (B, In), W (In, Out), dY (B, Out) -> dL/dX (B, In)')
 
-# Step 76 - derive_linear_dw_on_paper (not yet solved)
-# TODO: implement
-
-# Step 77 - linear_backward_dx (not yet solved)
-# TODO: implement
-
-# Step 78 - linear_backward_dw (not yet solved)
-# TODO: implement
-
-# Step 79 - bias_add_forward (not yet solved)
-# TODO: implement
-
-# Step 80 - bias_add_backward_db (not yet solved)
-# TODO: implement
-
-# Step 81 - relu_forward (not yet solved)
-# TODO: implement
-
-# Step 82 - relu_backward (not yet solved)
-# TODO: implement
-
-# Step 83 - softmax_cross_entropy_backward (not yet solved)
-# TODO: implement
-
-# Step 84 - layernorm_forward_mean (not yet solved)
-# TODO: implement
-
-# Step 85 - layernorm_forward_variance (not yet solved)
-# TODO: implement
-
-# Step 86 - layernorm_forward_normalize (not yet solved)
-# TODO: implement
-
-# Step 87 - layernorm_forward_affine (not yet solved)
-# TODO: implement
-
-# Step 88 - layernorm_backward_subtract_mean (not yet solved)
-# TODO: implement
-
-# Step 89 - layernorm_backward_divide_std (not yet solved)
-# TODO: implement
-
-# Step 90 - layernorm_backward_full (not yet solved)
-# TODO: implement
-
-# Step 91 - layernorm_backward_implementation (not yet solved)
-# TODO: implement
-
-# Step 92 - create_token_embedding (not yet solved)
-# TODO: implement
-
-# Step 93 - token_embedding_forward (not yet solved)
-# TODO: implement
-
-# Step 94 - token_embedding_backward (not yet solved)
-# TODO: implement
-
-# Step 95 - create_positional_embedding (not yet solved)
-# TODO: implement
-
-# Step 96 - slice_positional_embedding (not yet solved)
-# TODO: implement
-
-# Step 97 - add_token_and_positional_embeddings (not yet solved)
-# TODO: implement
-
-# Step 98 - embedding_sum_backward (not yet solved)
-# TODO: implement
-
-# Step 99 - create_qkv_projections (not yet solved)
-# TODO: implement
-
-# Step 100 - compute_query (not yet solved)
-# TODO: implement
-
-# Step 101 - compute_key (not yet solved)
-# TODO: implement
-
-# Step 102 - compute_value (not yet solved)
-# TODO: implement
-
-# Step 103 - compute_attention_scores (not yet solved)
-# TODO: implement
-
-# Step 104 - scale_attention_scores (not yet solved)
-# TODO: implement
-
-# Step 105 - build_causal_mask (not yet solved)
-# TODO: implement
-
-# Step 106 - apply_causal_mask (not yet solved)
-# TODO: implement
-
-# Step 107 - softmax_attention_weights (not yet solved)
-# TODO: implement
-
-# Step 108 - attention_weighted_values (not yet solved)
-# TODO: implement
-
-# Step 109 - apply_output_projection (not yet solved)
-# TODO: implement
-
-# Step 110 - output_projection_backward (not yet solved)
-# TODO: implement
-
-# Step 111 - attention_value_backward (not yet solved)
-# TODO: implement
-
-# Step 112 - masked_softmax_backward (not yet solved)
-# TODO: implement
-
-# Step 113 - scale_scores_backward (not yet solved)
-# TODO: implement
-
-# Step 114 - qk_scores_backward (not yet solved)
-# TODO: implement
-
-# Step 115 - qkv_projection_backward (not yet solved)
-# TODO: implement
-
-# Step 116 - choose_attention_head_config (not yet solved)
-# TODO: implement
-
-# Step 117 - create_multihead_qkv_projections (not yet solved)
-# TODO: implement
-
-# Step 118 - create_multihead_output_projection (not yet solved)
-# TODO: implement
-
-# Step 119 - reshape_to_heads (not yet solved)
-# TODO: implement
-
-# Step 120 - transpose_heads_to_front (not yet solved)
-# TODO: implement
-
-# Step 121 - get_multihead_n_heads (not yet solved)
-# TODO: implement
-
-# Step 122 - get_multihead_sequence_length (not yet solved)
-# TODO: implement
-
-# Step 123 - compute_d_head (not yet solved)
-# TODO: implement
-
-# Step 124 - multihead_masked_softmax_scores (not yet solved)
-# TODO: implement
-
-# Step 125 - multihead_weighted_sum (not yet solved)
-# TODO: implement
-
-# Step 126 - transpose_heads_to_back (not yet solved)
-# TODO: implement
-
-# Step 127 - get_multihead_output_sequence_length (not yet solved)
-# TODO: implement
-
-# Step 128 - merge_heads_to_d_model (not yet solved)
-# TODO: implement
-
-# Step 129 - multihead_output_projection_forward (not yet solved)
-# TODO: implement
-
-# Step 130 - multihead_reshape_transpose_backward (not yet solved)
-# TODO: implement
-
-# Step 131 - ffn_linear_one_forward (not yet solved)
-# TODO: implement
-
-# Step 132 - ffn_activation_forward (not yet solved)
-# TODO: implement
-
-# Step 133 - ffn_linear_two_forward (not yet solved)
-# TODO: implement
-
-# Step 134 - ffn_backward (not yet solved)
-# TODO: implement
-
-# Step 135 - residual_forward (not yet solved)
-# TODO: implement
-
-# Step 136 - residual_backward (not yet solved)
-# TODO: implement
-
-# Step 137 - pre_layernorm_sublayer_forward (not yet solved)
-# TODO: implement
-
-# Step 138 - transformer_block_forward (not yet solved)
-# TODO: implement
-
-# Step 139 - transformer_block_backward (not yet solved)
-# TODO: implement
-
-# Step 140 - stack_transformer_blocks (not yet solved)
-# TODO: implement
-
-# Step 141 - forward_through_all_blocks (not yet solved)
-# TODO: implement
-
-# Step 142 - backward_through_all_blocks (not yet solved)
-# TODO: implement
-
-# Step 143 - final_layernorm_forward (not yet solved)
-# TODO: implement
-
-# Step 144 - lm_head_linear_forward (not yet solved)
-# TODO: implement
-
-# Step 145 - full_model_forward (not yet solved)
-# TODO: implement
-
-# Step 146 - full_model_backward (not yet solved)
-# TODO: implement
-
-# Step 147 - initialize_adam_moments (not yet solved)
-# TODO: implement
-
-# Step 148 - initialize_adam_step_counter (not yet solved)
-# TODO: implement
-
-# Step 149 - adam_increment_step (not yet solved)
-# TODO: implement
-
-# Step 150 - adam_update_first_moment (not yet solved)
-# TODO: implement
-
-# Step 151 - adam_update_second_moment (not yet solved)
-# TODO: implement
-
-# Step 152 - adam_bias_correction (not yet solved)
-# TODO: implement
-
-# Step 153 - adam_parameter_update (not yet solved)
-# TODO: implement
-
-# Step 154 - wire_full_training_loop (not yet solved)
-# TODO: implement
-
-# Step 155 - logging_and_validation_loss (not yet solved)
-# TODO: implement
-
-# Step 156 - encode_prompt (not yet solved)
-# TODO: implement
-
-# Step 157 - crop_context_to_block_size (not yet solved)
-# TODO: implement
-
-# Step 158 - forward_to_get_logits (not yet solved)
-# TODO: implement
-
-# Step 159 - take_last_position_logits (not yet solved)
-# TODO: implement
-
-# Step 160 - apply_temperature (not yet solved)
-# TODO: implement
-
-# Step 161 - top_k_filter (not yet solved)
-# TODO: implement
-
-# Step 162 - softmax_to_probs (not yet solved)
-# TODO: implement
-
-# Step 163 - sample_one_token (not yet solved)
-# TODO: implement
-
-# Step 164 - append_token_to_sequence (not yet solved)
-# TODO: implement
-
-# Step 165 - generation_loop_for_n_steps (not yet solved)
-# TODO: implement
-
-# Step 166 - decode_final_sequence (not yet solved)
-# TODO: implement
-
+# Step 76 - derive_linear_dw_on_paper
+def derive_linear_dw_on_paper():
+    """Return notes deriving dL/dW = X.T @ dY for Y = X @ W."""
+    return ('Y = X @ W\n'
+            'dL/dW = X.T @ dY\n'
+            'shapes: X (B, In), dY (B, Out) -> dL/dW (In, Out)')
+
+# Step 77 - linear_backward_dx
+def linear_backward_dx(dy, cache):
+    """Gradient w.r.t. the linear layer input: dY @ W.T."""
+    return matmul(dy, transpose_matrix(cache['w']))
+
+# Step 78 - linear_backward_dw
+def linear_backward_dw(dy, cache):
+    """Gradient w.r.t. the linear layer weights: X.T @ dY."""
+    return matmul(transpose_matrix(cache['x']), dy)
+
+# Step 79 - bias_add_forward
+def bias_add_forward(x, b):
+    """Broadcast-add a (D,) bias to every row of x."""
+    return {'y': x + b, 'cache': {'x': x, 'b': b}}
+
+# Step 80 - bias_add_backward_db
+def bias_add_backward_db(dy, cache=None):
+    """The bias is shared across rows, so its gradient sums over the batch."""
+    return np.sum(dy, axis=0)
+
+# Step 81 - relu_forward
+def relu_forward(x):
+    """Elementwise max(x, 0), caching the input for the backward mask."""
+    return {'y': np.maximum(x, 0.0), 'cache': {'x': x}}
+
+# Step 82 - relu_backward
+def relu_backward(dy, cache):
+    """Gradient flows only where the input was positive."""
+    return dy * (cache['x'] > 0)
+
+# Step 83 - softmax_cross_entropy_backward
+def softmax_cross_entropy_backward(probs, targets):
+    """dL/dlogits for mean cross-entropy: (probs - onehot(targets)) / B."""
+    onehot = one_hot_encode_batch(targets, probs.shape[1])
+    return (probs - onehot) / len(targets)
+
+# Step 84 - layernorm_forward_mean
+def layernorm_forward_mean(x):
+    """Per-row mean over the feature axis, kept as size 1 for broadcasting."""
+    return np.mean(x, axis=-1, keepdims=True)
+
+# Step 85 - layernorm_forward_variance
+def layernorm_forward_variance(x):
+    """Per-row variance over the feature axis, kept as size 1."""
+    return np.mean((x - layernorm_forward_mean(x)) ** 2, axis=-1, keepdims=True)
+
+# Step 86 - layernorm_forward_normalize
+def layernorm_forward_normalize(x, mean, var, eps=1e-5):
+    """Standardize x to zero mean and unit variance per row."""
+    return (x - mean) / np.sqrt(var + eps)
+
+# Step 87 - layernorm_forward_affine
+def layernorm_forward_affine(x_hat, gamma, beta):
+    """Rescale and shift the normalized activations."""
+    return gamma * x_hat + beta
+
+def layernorm_forward(x, gamma, beta, eps=1e-5):
+    "the four LayerNorm steps in one call, with the cache the backward needs"
+    mean = layernorm_forward_mean(x)
+    var = layernorm_forward_variance(x)
+    x_hat = layernorm_forward_normalize(x, mean, var, eps)
+    return {'y': layernorm_forward_affine(x_hat, gamma, beta),
+            'cache': {'x_hat': x_hat, 'std': np.sqrt(var + eps), 'gamma': gamma}}
+
+# Step 88 - layernorm_backward_subtract_mean
+def layernorm_backward_subtract_mean(dy):
+    """Backward of the centering step x - mean(x)."""
+    return dy - np.mean(dy, axis=-1, keepdims=True)
+
+# Step 89 - layernorm_backward_divide_std
+def layernorm_backward_divide_std(dy, x_hat, std):
+    """Backward of x_hat = centered / std, where std also depends on x."""
+    return (dy - x_hat * np.mean(dy * x_hat, axis=-1, keepdims=True)) / std
+
+# Step 90 - layernorm_backward_full
+def layernorm_backward_full():
+    """Return notes deriving the full LayerNorm backward pass."""
+    return ('y = gamma * x_hat + beta, x_hat = (x - mean) / std\n'
+            'dgamma = sum(dy * x_hat), dbeta = sum(dy)\n'
+            'dx_hat = dy * gamma\n'
+            'dx = (dx_hat - mean(dx_hat) - x_hat * mean(dx_hat * x_hat)) / std\n'
+            'the two mean terms appear because mean and std depend on every feature')
+
+# Step 91 - layernorm_backward_implementation
+def layernorm_backward_implementation(dy, cache):
+    """Return {'dx', 'dgamma', 'dbeta'} for LayerNorm."""
+    x_hat, std = cache['x_hat'], cache['std']
+    axes = tuple(range(dy.ndim - 1))
+    dx_hat = dy * cache['gamma']
+    dx = layernorm_backward_divide_std(
+        layernorm_backward_subtract_mean(dx_hat), x_hat, std)
+    return {'dx': dx,
+            'dgamma': np.sum(dy * x_hat, axis=axes),
+            'dbeta': np.sum(dy, axis=axes)}
+
+# Step 92 - create_token_embedding
+def create_token_embedding(vocab_size, d_model, scale=0.02):
+    """One small random vector per token in the vocabulary."""
+    return np.random.randn(vocab_size, d_model) * scale
+
+# Step 93 - token_embedding_forward
+def token_embedding_forward(tok_emb, ids):
+    """Look up the embedding row for every id: (B, T) -> (B, T, d_model)."""
+    return {'y': tok_emb[ids], 'cache': {'ids': ids, 'vocab_size': len(tok_emb)}}
+
+# Step 94 - token_embedding_backward
+def token_embedding_backward(dy, cache):
+    """Scatter-add the gradients back into the table; repeated ids accumulate."""
+    ids = np.asarray(cache['ids']).reshape(-1)
+    rows = dy.reshape(len(ids), -1)
+    d_emb = np.zeros((cache['vocab_size'], rows.shape[1]))
+    np.add.at(d_emb, ids, rows)
+    return d_emb
+
+# Step 95 - create_positional_embedding
+def create_positional_embedding(block_size, d_model, scale=0.02):
+    """One small random vector per position in the context window."""
+    return np.random.randn(block_size, d_model) * scale
+
+# Step 96 - slice_positional_embedding
+def slice_positional_embedding(pos_emb, seq_len):
+    """Take the first seq_len positions; sequences may be shorter than block_size."""
+    return pos_emb[:seq_len]
+
+# Step 97 - add_token_and_positional_embeddings
+def add_token_and_positional_embeddings(tok_vectors, pos_vectors):
+    """Add (T, D) position vectors to (B, T, D) token vectors by broadcasting."""
+    return {'y': tok_vectors + pos_vectors, 'cache': {}}
+
+# Step 98 - embedding_sum_backward
+def embedding_sum_backward(dy, cache=None):
+    """Addition copies the gradient; positions are shared, so they sum over the batch."""
+    return {'d_tok': dy, 'd_pos': np.sum(dy, axis=0)}
+
+# Step 99 - create_qkv_projections
+def create_qkv_projections(d_model, d_head, scale=0.02):
+    """Separate query, key and value projection matrices."""
+    return {'W_q': np.random.randn(d_model, d_head) * scale,
+            'W_k': np.random.randn(d_model, d_head) * scale,
+            'W_v': np.random.randn(d_model, d_head) * scale}
+
+# Step 100 - compute_query
+def compute_query(x, w_q):
+    """Q = x @ W_q"""
+    return matmul(x, w_q)
+
+# Step 101 - compute_key
+def compute_key(x, w_k):
+    """K = x @ W_k"""
+    return matmul(x, w_k)
+
+# Step 102 - compute_value
+def compute_value(x, w_v):
+    """V = x @ W_v"""
+    return matmul(x, w_v)
+
+# Step 103 - compute_attention_scores
+def compute_attention_scores(q, k):
+    """Q @ K.T over the last two axes: how much each position matches each other."""
+    return np.matmul(q, np.swapaxes(k, -1, -2))
+
+# Step 104 - scale_attention_scores
+def scale_attention_scores(scores, d_head):
+    """Divide by sqrt(d_head) so score variance stays about 1 as d_head grows."""
+    return scores / np.sqrt(d_head)
+
+# Step 105 - build_causal_mask
+def build_causal_mask(seq_len):
+    """Lower-triangular boolean mask: True where a position is allowed to attend."""
+    return np.tril(np.ones((seq_len, seq_len), dtype=bool))
+
+# Step 106 - apply_causal_mask
+def apply_causal_mask(scores, mask):
+    """Send future positions to -inf so softmax gives them exactly zero weight."""
+    return np.where(mask, scores, -np.inf)
+
+# Step 107 - softmax_attention_weights
+def softmax_attention_weights(scores):
+    """Stable softmax over the last axis, for 2D or 4D score tensors."""
+    e = array_exp(scores - np.max(scores, axis=-1, keepdims=True))
+    return e / np.sum(e, axis=-1, keepdims=True)
+
+# Step 108 - attention_weighted_values
+def attention_weighted_values(weights, v):
+    """Mix the value vectors using the attention weights."""
+    return np.matmul(weights, v)
+
+# Step 109 - apply_output_projection
+def apply_output_projection(context, w_o):
+    """Project the attention context back into model space."""
+    return {'y': matmul(context, w_o), 'cache': {'context': context, 'w_o': w_o}}
+
+# Step 110 - output_projection_backward
+def output_projection_backward(dy, cache):
+    """Return {'d_context', 'dw_o'} for context @ W_o."""
+    return {'d_context': matmul(dy, transpose_matrix(cache['w_o'])),
+            'dw_o': matmul(transpose_matrix(cache['context']), dy)}
+
+# Step 111 - attention_value_backward
+def attention_value_backward(d_context, weights, v):
+    """Return {'d_weights', 'd_v'} for context = weights @ V."""
+    return {'d_weights': np.matmul(d_context, np.swapaxes(v, -1, -2)),
+            'd_v': np.matmul(np.swapaxes(weights, -1, -2), d_context)}
+
+# Step 112 - masked_softmax_backward
+def masked_softmax_backward(d_weights, weights):
+    """Softmax Jacobian; masked slots have weight 0 and stay 0."""
+    return weights * (d_weights - np.sum(d_weights * weights, axis=-1, keepdims=True))
+
+# Step 113 - scale_scores_backward
+def scale_scores_backward(d_scores, d_head):
+    """Dividing the scores by sqrt(d_head) divides their gradient too."""
+    return d_scores / np.sqrt(d_head)
+
+# Step 114 - qk_scores_backward
+def qk_scores_backward(d_scores, q, k):
+    """Return {'dq', 'dk'} for scores = Q @ K.T."""
+    return {'dq': np.matmul(d_scores, k),
+            'dk': np.matmul(np.swapaxes(d_scores, -1, -2), q)}
+
+# Step 115 - qkv_projection_backward
+def qkv_projection_backward(dq, dk, dv, cache):
+    """x feeds all three projections, so dx sums the three paths."""
+    x = cache['x']
+    return {'dx': (matmul(dq, transpose_matrix(cache['W_q']))
+                   + matmul(dk, transpose_matrix(cache['W_k']))
+                   + matmul(dv, transpose_matrix(cache['W_v']))),
+            'dW_q': matmul(transpose_matrix(x), dq),
+            'dW_k': matmul(transpose_matrix(x), dk),
+            'dW_v': matmul(transpose_matrix(x), dv)}
+
+# Step 116 - choose_attention_head_config
+def choose_attention_head_config(d_model, n_heads):
+    """Split d_model evenly across the heads."""
+    if d_model % n_heads != 0:
+        raise ValueError("d_model must be divisible by n_heads")
+    return {'n_heads': n_heads, 'd_head': d_model // n_heads, 'd_model': d_model}
+
+# Step 117 - create_multihead_qkv_projections
+def create_multihead_qkv_projections(d_model, n_heads, scale=0.02):
+    """One (d_model, d_model) matrix per projection; heads are carved out by reshape."""
+    choose_attention_head_config(d_model, n_heads)
+    return create_qkv_projections(d_model, d_model, scale)
+
+# Step 118 - create_multihead_output_projection
+def create_multihead_output_projection(d_model, scale=0.02):
+    """Projection applied after the heads are merged back together."""
+    return np.random.randn(d_model, d_model) * scale
+
+# Step 119 - reshape_to_heads
+def reshape_to_heads(x, n_heads):
+    """(B, T, D) -> (B, T, H, D // H)"""
+    b, t, d = x.shape
+    return x.reshape(b, t, n_heads, d // n_heads)
+
+# Step 120 - transpose_heads_to_front
+def transpose_heads_to_front(x):
+    """(B, T, H, d_head) -> (B, H, T, d_head) so each head is its own matrix."""
+    return np.transpose(x, (0, 2, 1, 3))
+
+# Step 121 - get_multihead_n_heads
+def get_multihead_n_heads(x):
+    """Heads sit on axis 1 once they are transposed to the front."""
+    return x.shape[1]
+
+# Step 122 - get_multihead_sequence_length
+def get_multihead_sequence_length(x):
+    """Sequence length sits on axis 2 in (B, H, T, d_head) layout."""
+    return x.shape[2]
+
+# Step 123 - compute_d_head
+def compute_d_head(d_model, n_heads):
+    """Width of a single attention head."""
+    return d_model // n_heads
+
+# Step 124 - multihead_masked_softmax_scores
+def multihead_masked_softmax_scores(q, k):
+    """Scaled, causally masked, softmaxed attention weights of shape (B, H, T, T)."""
+    scores = scale_attention_scores(compute_attention_scores(q, k), q.shape[-1])
+    mask = build_causal_mask(get_multihead_sequence_length(q))
+    return softmax_attention_weights(apply_causal_mask(scores, mask))
+
+# Step 125 - multihead_weighted_sum
+def multihead_weighted_sum(weights, v):
+    """Mix each head's value vectors using that head's attention weights."""
+    return np.matmul(weights, v)
+
+# Step 126 - transpose_heads_to_back
+def transpose_heads_to_back(x):
+    """(B, H, T, d_head) -> (B, T, H, d_head), the inverse of transpose_heads_to_front."""
+    return np.transpose(x, (0, 2, 1, 3))
+
+# Step 127 - get_multihead_output_sequence_length
+def get_multihead_output_sequence_length(x):
+    """After transposing back, sequence length is on axis 1 again."""
+    return x.shape[1]
+
+# Step 128 - merge_heads_to_d_model
+def merge_heads_to_d_model(x):
+    """(B, T, H, d_head) -> (B, T, d_model), concatenating the heads."""
+    b, t, h, d_head = x.shape
+    return x.reshape(b, t, h * d_head)
+
+# Step 129 - multihead_output_projection_forward
+def multihead_output_projection_forward(context, w_o):
+    """Project the merged heads back into model space."""
+    return apply_output_projection(context, w_o)
+
+# Step 130 - multihead_reshape_transpose_backward
+def multihead_reshape_transpose_backward(dy, n_heads):
+    """Undo merge and transpose: (B, T, D) -> (B, H, T, d_head)."""
+    return transpose_heads_to_front(reshape_to_heads(dy, n_heads))
+
+def flatten_tokens(x):
+    "collapse the batch and time axes so (B, T, D) matmuls behave like (N, D)"
+    return x.reshape(-1, x.shape[-1])
+
+def split_into_heads(x, n_heads):
+    "(B, T, D) -> (B, H, T, d_head)"
+    return transpose_heads_to_front(reshape_to_heads(x, n_heads))
+
+def multihead_attention_forward(x, attn):
+    "masked multi-head self-attention built from steps 100-129"
+    n_heads = attn['n_heads']
+    q = split_into_heads(compute_query(x, attn['W_q']), n_heads)
+    k = split_into_heads(compute_key(x, attn['W_k']), n_heads)
+    v = split_into_heads(compute_value(x, attn['W_v']), n_heads)
+    weights = multihead_masked_softmax_scores(q, k)
+    context = merge_heads_to_d_model(
+        transpose_heads_to_back(multihead_weighted_sum(weights, v)))
+    out = multihead_output_projection_forward(flatten_tokens(context), attn['W_o'])
+    return {'y': out['y'].reshape(x.shape),
+            'cache': {'x': x, 'q': q, 'k': k, 'v': v, 'weights': weights,
+                      'n_heads': n_heads, 'proj': out['cache'], 'attn': attn}}
+
+def multihead_attention_backward(dy, cache):
+    "reverse of multihead_attention_forward, built from steps 110-115 and 130"
+    attn, n_heads = cache['attn'], cache['n_heads']
+    proj = output_projection_backward(flatten_tokens(dy), cache['proj'])
+    d_context = multihead_reshape_transpose_backward(
+        proj['d_context'].reshape(dy.shape), n_heads)
+
+    values = attention_value_backward(d_context, cache['weights'], cache['v'])
+    d_scores = scale_scores_backward(
+        masked_softmax_backward(values['d_weights'], cache['weights']),
+        cache['q'].shape[-1])
+    qk = qk_scores_backward(d_scores, cache['q'], cache['k'])
+
+    def merge(heads):
+        return flatten_tokens(merge_heads_to_d_model(transpose_heads_to_back(heads)))
+
+    grads = qkv_projection_backward(
+        merge(qk['dq']), merge(qk['dk']), merge(values['d_v']),
+        {'x': flatten_tokens(cache['x']), **attn})
+    return {'dx': grads['dx'].reshape(cache['x'].shape),
+            'dW_q': grads['dW_q'], 'dW_k': grads['dW_k'],
+            'dW_v': grads['dW_v'], 'dW_o': proj['dw_o']}
+
+# Step 131 - ffn_linear_one_forward
+def ffn_linear_one_forward(x, w1, b1):
+    """Expand from d_model up to d_ff."""
+    return bias_add_forward(linear_forward(x, w1)['y'], b1)['y']
+
+# Step 132 - ffn_activation_forward
+def ffn_activation_forward(h):
+    """ReLU between the two feed-forward projections."""
+    return relu_forward(h)['y']
+
+# Step 133 - ffn_linear_two_forward
+def ffn_linear_two_forward(a, w2, b2):
+    """Project back down from d_ff to d_model."""
+    return bias_add_forward(linear_forward(a, w2)['y'], b2)['y']
+
+def ffn_forward(x, ffn):
+    "the whole feed-forward network, with one cache for the backward pass"
+    h = ffn_linear_one_forward(x, ffn['w1'], ffn['b1'])
+    a = ffn_activation_forward(h)
+    return {'y': ffn_linear_two_forward(a, ffn['w2'], ffn['b2']),
+            'cache': {'x': x, 'h': h, 'a': a, 'ffn': ffn}}
+
+# Step 134 - ffn_backward
+def ffn_backward(dy, cache):
+    """Return {'dx', 'dw1', 'db1', 'dw2', 'db2'} for the two-layer ReLU network."""
+    ffn = cache['ffn']
+    da = linear_backward_dx(dy, {'w': ffn['w2']})
+    dh = relu_backward(da, {'x': cache['h']})
+    return {'dx': linear_backward_dx(dh, {'w': ffn['w1']}),
+            'dw1': linear_backward_dw(flatten_tokens(dh), {'x': flatten_tokens(cache['x'])}),
+            'db1': bias_add_backward_db(flatten_tokens(dh)),
+            'dw2': linear_backward_dw(flatten_tokens(dy), {'x': flatten_tokens(cache['a'])}),
+            'db2': bias_add_backward_db(flatten_tokens(dy))}
+
+# Step 135 - residual_forward
+def residual_forward(x, sublayer_out):
+    """Skip connection: add the sublayer output back onto its input."""
+    return {'y': x + sublayer_out, 'cache': {}}
+
+# Step 136 - residual_backward
+def residual_backward(dy, cache=None):
+    """Addition sends the same gradient down both branches."""
+    return {'dx': dy, 'd_sublayer': dy}
+
+# Step 137 - pre_layernorm_sublayer_forward
+def pre_layernorm_sublayer_forward(x, gamma, beta, sublayer_fn, eps=1e-5):
+    """Pre-LN wrapper: x + sublayer(LayerNorm(x))."""
+    norm = layernorm_forward(x, gamma, beta, eps)
+    sub = sublayer_fn(norm['y'])
+    return {'y': residual_forward(x, sub['y'])['y'],
+            'cache': {'norm': norm['cache'], 'sub': sub['cache']}}
+
+def pre_layernorm_sublayer_backward(dy, cache, sublayer_backward):
+    "reverse of pre_layernorm_sublayer_forward"
+    split = residual_backward(dy)
+    sub = sublayer_backward(split['d_sublayer'], cache['sub'])
+    norm = layernorm_backward_implementation(sub['dx'], cache['norm'])
+    return {'dx': split['dx'] + norm['dx'], 'sub': sub, 'norm': norm}
+
+# Step 138 - transformer_block_forward
+def transformer_block_forward(x, block, eps=1e-5):
+    """One pre-LN block: attention sublayer, then feed-forward sublayer."""
+    attn = pre_layernorm_sublayer_forward(
+        x, block['ln1']['gamma'], block['ln1']['beta'],
+        lambda h: multihead_attention_forward(h, block['attn']), eps)
+    ffn = pre_layernorm_sublayer_forward(
+        attn['y'], block['ln2']['gamma'], block['ln2']['beta'],
+        lambda h: ffn_forward(h, block['ffn']), eps)
+    return {'y': ffn['y'], 'cache': {'attn': attn['cache'], 'ffn': ffn['cache']}}
+
+# Step 139 - transformer_block_backward
+def transformer_block_backward(dy, cache):
+    """Return {'dx', 'grads'} with grads laid out like the block's parameters."""
+    ffn = pre_layernorm_sublayer_backward(dy, cache['ffn'], ffn_backward)
+    attn = pre_layernorm_sublayer_backward(
+        ffn['dx'], cache['attn'], multihead_attention_backward)
+    return {'dx': attn['dx'],
+            'grads': {
+                'ln1': {'gamma': attn['norm']['dgamma'], 'beta': attn['norm']['dbeta']},
+                'ln2': {'gamma': ffn['norm']['dgamma'], 'beta': ffn['norm']['dbeta']},
+                'attn': {'W_q': attn['sub']['dW_q'], 'W_k': attn['sub']['dW_k'],
+                         'W_v': attn['sub']['dW_v'], 'W_o': attn['sub']['dW_o']},
+                'ffn': {'w1': ffn['sub']['dw1'], 'b1': ffn['sub']['db1'],
+                        'w2': ffn['sub']['dw2'], 'b2': ffn['sub']['db2']}}}
+
+# Step 140 - stack_transformer_blocks
+def stack_transformer_blocks(n_layers, d_model, n_heads, d_ff, scale=0.02):
+    """Build n_layers independent sets of block parameters."""
+    blocks = []
+    for _ in range(n_layers):
+        blocks.append({
+            'ln1': {'gamma': np.ones(d_model), 'beta': np.zeros(d_model)},
+            'ln2': {'gamma': np.ones(d_model), 'beta': np.zeros(d_model)},
+            'attn': {'n_heads': n_heads,
+                     **create_multihead_qkv_projections(d_model, n_heads, scale),
+                     'W_o': create_multihead_output_projection(d_model, scale)},
+            'ffn': {'w1': np.random.randn(d_model, d_ff) * scale,
+                    'b1': np.zeros(d_ff),
+                    'w2': np.random.randn(d_ff, d_model) * scale,
+                    'b2': np.zeros(d_model)}})
+    return blocks
+
+# Step 141 - forward_through_all_blocks
+def forward_through_all_blocks(x, blocks):
+    """Run x through every block in order, keeping each block's cache."""
+    caches = []
+    for block in blocks:
+        out = transformer_block_forward(x, block)
+        x = out['y']
+        caches.append(out['cache'])
+    return {'y': x, 'cache': caches}
+
+# Step 142 - backward_through_all_blocks
+def backward_through_all_blocks(dy, caches):
+    """Walk the blocks in reverse, threading the gradient backwards."""
+    grads = [None] * len(caches)
+    for i in reversed(range(len(caches))):
+        out = transformer_block_backward(dy, caches[i])
+        dy = out['dx']
+        grads[i] = out['grads']
+    return {'dx': dy, 'grads': grads}
+
+# Step 143 - final_layernorm_forward
+def final_layernorm_forward(x, gamma, beta, eps=1e-5):
+    """LayerNorm applied once after the last block, before the output head."""
+    return layernorm_forward(x, gamma, beta, eps)
+
+# Step 144 - lm_head_linear_forward
+def lm_head_linear_forward(x, w_lm, b_lm):
+    """Project hidden states to one logit per vocabulary entry."""
+    return {'y': bias_add_forward(linear_forward(x, w_lm)['y'], b_lm)['y'],
+            'cache': {'x': x, 'w': w_lm}}
+
+# Step 145 - full_model_forward
+def full_model_forward(params, ids, eps=1e-5):
+    """Run token ids (B, T) through the whole GPT and return logits plus caches."""
+    ids = np.asarray(ids)
+    tok = token_embedding_forward(params['tok_emb'], ids)
+    pos = slice_positional_embedding(params['pos_emb'], ids.shape[-1])
+    emb = add_token_and_positional_embeddings(tok['y'], pos)
+    blocks = forward_through_all_blocks(emb['y'], params['blocks'])
+    norm = final_layernorm_forward(blocks['y'], params['ln_f']['gamma'],
+                                   params['ln_f']['beta'], eps)
+    head = lm_head_linear_forward(norm['y'], params['lm_head']['w_lm'],
+                                  params['lm_head']['b_lm'])
+    return {'logits': head['y'],
+            'cache': {'logits': head['y'], 'tok': tok['cache'], 'blocks': blocks['cache'],
+                      'norm': norm['cache'], 'head': head['cache'],
+                      'seq_len': ids.shape[-1]}}
+
+# Step 146 - full_model_backward
+def full_model_backward(params, cache, targets):
+    """Return gradients for every parameter, laid out exactly like params."""
+    head, logits = cache['head'], cache['logits']
+    vocab_size = logits.shape[-1]
+    probs = logits_to_probs_rowwise(logits.reshape(-1, vocab_size))
+    dlogits = softmax_cross_entropy_backward(
+        probs, np.asarray(targets).reshape(-1)).reshape(logits.shape)
+
+    flat = {'x': flatten_tokens(head['x']), 'w': head['w']}
+    norm = layernorm_backward_implementation(
+        linear_backward_dx(dlogits, flat), cache['norm'])
+    blocks = backward_through_all_blocks(norm['dx'], cache['blocks'])
+    emb = embedding_sum_backward(blocks['dx'])
+
+    d_pos_emb = np.zeros_like(params['pos_emb'])
+    d_pos_emb[:cache['seq_len']] = emb['d_pos']
+    return {'tok_emb': token_embedding_backward(emb['d_tok'], cache['tok']),
+            'pos_emb': d_pos_emb,
+            'blocks': blocks['grads'],
+            'ln_f': {'gamma': norm['dgamma'], 'beta': norm['dbeta']},
+            'lm_head': {'w_lm': linear_backward_dw(flatten_tokens(dlogits), flat),
+                        'b_lm': bias_add_backward_db(flatten_tokens(dlogits))}}
+
+# Step 147 - initialize_adam_moments
+def zeros_like_tree(node):
+    "mirror a nested dict/list of arrays, replacing every array with zeros"
+    if isinstance(node, np.ndarray):
+        return np.zeros_like(node)
+    if isinstance(node, dict):
+        return {k: zeros_like_tree(v) for k, v in node.items()
+                if isinstance(v, (np.ndarray, dict, list))}
+    if isinstance(node, list):
+        return [zeros_like_tree(v) for v in node]
+    return None
+
+def initialize_adam_moments(params):
+    """Zero-filled first and second moment trees shaped like params."""
+    return {'m': zeros_like_tree(params), 'v': zeros_like_tree(params)}
+
+# Step 148 - initialize_adam_step_counter
+def initialize_adam_step_counter():
+    """Adam's step counter starts at zero and is bumped before the first update."""
+    return 0
+
+# Step 149 - adam_increment_step
+def adam_increment_step(t):
+    """Advance the step counter used by bias correction."""
+    return t + 1
+
+# Step 150 - adam_update_first_moment
+def adam_update_first_moment(m, grad, beta1=0.9):
+    """Running average of the gradient."""
+    return beta1 * m + (1 - beta1) * grad
+
+# Step 151 - adam_update_second_moment
+def adam_update_second_moment(v, grad, beta2=0.999):
+    """Running average of the squared gradient."""
+    return beta2 * v + (1 - beta2) * grad ** 2
+
+# Step 152 - adam_bias_correction
+def adam_bias_correction(m, v, beta1, beta2, t):
+    """Undo the bias from starting both moments at zero."""
+    return {'m_hat': m / (1 - beta1 ** t), 'v_hat': v / (1 - beta2 ** t)}
+
+# Step 153 - adam_parameter_update
+def adam_parameter_update(param, m_hat, v_hat, learning_rate, eps=1e-8):
+    """Step against the gradient, scaled per coordinate by 1 / sqrt(v_hat)."""
+    return param - learning_rate * m_hat / (np.sqrt(v_hat) + eps)
+
+# Step 154 - wire_full_training_loop
+def adam_update_tree(params, grads, m, v, t, learning_rate, beta1=0.9, beta2=0.999, eps=1e-8):
+    "apply one Adam update to every array in the parameter tree"
+    if isinstance(params, np.ndarray):
+        m = adam_update_first_moment(m, grads, beta1)
+        v = adam_update_second_moment(v, grads, beta2)
+        hats = adam_bias_correction(m, v, beta1, beta2, t)
+        return adam_parameter_update(params, hats['m_hat'], hats['v_hat'],
+                                     learning_rate, eps), m, v
+    if isinstance(params, dict):
+        updated = dict(params)
+        for key in grads:
+            updated[key], m[key], v[key] = adam_update_tree(
+                params[key], grads[key], m[key], v[key], t, learning_rate, beta1, beta2, eps)
+        return updated, m, v
+    if isinstance(params, list):
+        updated = list(params)
+        for i in range(len(grads)):
+            updated[i], m[i], v[i] = adam_update_tree(
+                params[i], grads[i], m[i], v[i], t, learning_rate, beta1, beta2, eps)
+        return updated, m, v
+    return params, m, v
+
+def batch_cross_entropy(logits, targets):
+    "mean cross-entropy over every position of a (B, T, V) logits tensor"
+    probs = logits_to_probs_rowwise(logits.reshape(-1, logits.shape[-1]))
+    return cross_entropy_loss(probs, np.asarray(targets).reshape(-1))
+
+def wire_full_training_loop(params, data, block_size, batch_size, learning_rate,
+                            num_steps, log_every):
+    """Train the full model with Adam and return {'params', 'loss_history'}."""
+    rng = np.random.default_rng(0)
+    moments = initialize_adam_moments(params)
+    m, v = moments['m'], moments['v']
+    t = initialize_adam_step_counter()
+    loss_history = []
+    for step in range(num_steps):
+        x, y = get_batch(data, block_size, batch_size, rng)
+        out = full_model_forward(params, x)
+        grads = full_model_backward(params, out['cache'], y)
+        t = adam_increment_step(t)
+        params, m, v = adam_update_tree(params, grads, m, v, t, learning_rate)
+        if step % log_every == 0:
+            loss_history.append(batch_cross_entropy(out['logits'], y))
+    return {'params': params, 'loss_history': loss_history}
+
+# Step 155 - logging_and_validation_loss
+def logging_and_validation_loss(params, val_ids, block_size, batch_size, n_eval_batches):
+    """Average cross-entropy over held-out batches, forward pass only."""
+    rng = np.random.default_rng(0)
+    total = 0.0
+    for _ in range(n_eval_batches):
+        x, y = get_batch(val_ids, block_size, batch_size, rng)
+        total += batch_cross_entropy(full_model_forward(params, x)['logits'], y)
+    return total / n_eval_batches
+
+# Step 156 - encode_prompt
+def encode_prompt(prompt, stoi):
+    """Turn a prompt string into a 1D array of token ids."""
+    return np.array(encode_string(prompt, stoi), dtype=np.int64)
+
+# Step 157 - crop_context_to_block_size
+def crop_context_to_block_size(ids, block_size):
+    """Keep only the most recent block_size tokens; the model sees no further back."""
+    return np.asarray(ids)[-block_size:]
+
+# Step 158 - forward_to_get_logits
+def forward_to_get_logits(params, ids):
+    """Run one sequence through the model, adding the batch axis if needed."""
+    ids = np.asarray(ids)
+    if ids.ndim == 1:
+        ids = ids[None, :]
+    return full_model_forward(params, ids)['logits']
+
+# Step 159 - take_last_position_logits
+def take_last_position_logits(logits):
+    """Only the final position predicts the next token."""
+    return logits[..., -1, :]
+
+# Step 160 - apply_temperature
+def apply_temperature(logits, temperature):
+    """Below 1 sharpens the distribution, above 1 flattens it."""
+    return logits / temperature
+
+# Step 161 - top_k_filter
+def top_k_filter(logits, k):
+    """Keep the k largest logits and send the rest to -inf."""
+    if k is None or k >= logits.shape[-1]:
+        return logits
+    kth = np.partition(logits, -k, axis=-1)[..., -k][..., None]
+    return np.where(logits >= kth, logits, -np.inf)
+
+# Step 162 - softmax_to_probs
+def softmax_to_probs(logits):
+    """Turn next-token logits into a probability distribution."""
+    return stable_softmax_1d(np.asarray(logits).reshape(-1))
+
+# Step 163 - sample_one_token
+def sample_one_token(probs, rng=None):
+    """Draw one token id from the next-token distribution."""
+    if rng is None:
+        return int(np.random.choice(len(probs), p=probs))
+    return int(rng.choice(len(probs), p=probs))
+
+# Step 164 - append_token_to_sequence
+def append_token_to_sequence(ids, token_id):
+    """Grow the running sequence by one token."""
+    return np.append(np.asarray(ids), np.int64(token_id))
+
+# Step 165 - generation_loop_for_n_steps
+def generation_loop_for_n_steps(params, prompt_ids, n_new_tokens, block_size,
+                                temperature=1.0, top_k=None, rng=None):
+    """Sample n_new_tokens ids, feeding each one back in as context."""
+    ids = np.asarray(prompt_ids, dtype=np.int64)
+    for _ in range(n_new_tokens):
+        context = crop_context_to_block_size(ids, block_size)
+        logits = take_last_position_logits(forward_to_get_logits(params, context))
+        logits = top_k_filter(apply_temperature(logits, temperature), top_k)
+        ids = append_token_to_sequence(ids, sample_one_token(softmax_to_probs(logits), rng))
+    return ids
+
+# Step 166 - decode_final_sequence
+def decode_final_sequence(ids, itos):
+    """Turn the generated token ids back into text."""
+    return decode_ids([int(i) for i in np.asarray(ids).reshape(-1)], itos)
